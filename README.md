@@ -38,8 +38,10 @@ Each module is versioned and published as an independent artifact, while remaini
 
 Andromeda provides a **Bill of Materials (BOM)** to ensure all modules work seamlessly together.
 
+#### LATEST_VERSION [![](https://jitpack.io/v/farsroidx/andromeda.svg)](https://jitpack.io/#farsroidx/andromeda)
+
 ```kotlin
-implementation(platform("com.github.farsroidx:andromeda-bom:<version>"))
+implementation(platform("com.github.farsroidx:andromeda-bom:🔝LATEST_VERSION🔝"))
 
 implementation("com.github.farsroidx:andromeda-foundation")
 implementation("com.github.farsroidx:andromeda-core")
