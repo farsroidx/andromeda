@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.maven.publish)
 }
 
+version = "1.0.0"
+
 android {
 
     namespace  = "ir.farsroidx.andromeda.koin"
@@ -53,6 +55,7 @@ dependencies {
 
     // Koin
     implementation(libs.koin.core)
+    implementation(libs.koin.android)
 
     // JUnit and Test
     testImplementation(libs.junit)
@@ -69,9 +72,10 @@ afterEvaluate {
 
             register<MavenPublication>("release") {
 
-                groupId    = "com.github.farsroidx"
+                groupId = group.toString()
+                version = version.toString()
+
                 artifactId = "andromeda-koin"
-                version    = "1.0.0"
 
                 from( components["release"] )
             }

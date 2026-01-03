@@ -11,6 +11,7 @@ import org.koin.java.KoinJavaComponent
  * It is thread-safe and initializes the instance only when it's first accessed.
  *
  * @param T The type of the instance to be provided.
+ *
  * @return A lazy-initialized [T] instance, thread-safe using `LazyThreadSafetyMode.SYNCHRONIZED`.
  */
 inline fun <reified T> provide(): Lazy<T> {
@@ -22,3 +23,13 @@ inline fun <reified T> provide(): Lazy<T> {
         KoinJavaComponent.get(T::class.java, null, null)
     }
 }
+
+/**
+ * Global UI Handler to execute tasks on the main thread.
+ */
+//val Andromeda.uiHandler: Handler by provide()
+
+/**
+ * Global SavedStateHandle to execute tasks on the main thread.
+ */
+//val Andromeda.savedStateHandle: SavedStateHandle by provide()
