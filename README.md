@@ -25,10 +25,17 @@ This repository serves as the **parent project** for the Andromeda ecosystem and
 
 Andromeda is composed of multiple standalone modules, including but not limited to:
 
-- `andromeda-foundation`
-- `andromeda-core`
-- `andromeda-logger`
-- `andromeda-viewmodel`
+| Feature | Unavailable | In Development | Stable | Latest Version |
+|:--------|:-----------:|:--------------:|:------:|:--------------:|
+| andromeda-bom                                  |—|—|—| [![](https://jitpack.io/v/farsroidx/andromeda-bom.svg)](https://jitpack.io/#farsroidx/andromeda-bom) |
+| [andromeda-foundation](lib-foundation)         | |✔|✔| [![](https://jitpack.io/v/farsroidx/andromeda-foundation.svg)](https://jitpack.io/#farsroidx/andromeda-foundation) |
+| [andromeda-foundation-ktx](lib-foundation-ktx) | |✔|✔| [![](https://jitpack.io/v/farsroidx/andromeda-foundation-ktx.svg)](https://jitpack.io/#farsroidx/andromeda-foundation-ktx) |
+| [andromeda-koin](lib-koin)                     |✔| | | [![](https://jitpack.io/v/farsroidx/andromeda-koin.svg)](https://jitpack.io/#farsroidx/andromeda-koin) |
+| [andromeda-ktx](lib-ktx)                       | |✔|✔| [![](https://jitpack.io/v/farsroidx/andromeda-ktx.svg)](https://jitpack.io/#farsroidx/andromeda-ktx) |
+| [andromeda-logging](lib-logging)               | |✔|✔| [![](https://jitpack.io/v/farsroidx/andromeda-logging.svg)](https://jitpack.io/#farsroidx/andromeda-logging) |
+| [andromeda-ui](lib-ui)                         | |✔|✔| [![](https://jitpack.io/v/farsroidx/andromeda-ui.svg)](https://jitpack.io/#farsroidx/andromeda-ui) |
+| [andromeda-ui-ktx](lib-ui-ktx)                 | |✔|✔| [![](https://jitpack.io/v/farsroidx/andromeda-ui-ktx.svg)](https://jitpack.io/#farsroidx/andromeda-ui-ktx) |
+| [andromeda-viewmodel](lib-viewmodel)           | | |✔| [![](https://jitpack.io/v/farsroidx/andromeda-viewmodel.svg)](https://jitpack.io/#farsroidx/andromeda-viewmodel) |
 
 Each module is versioned and published as an independent artifact, while remaining fully compatible through the Andromeda BOM.
 
@@ -38,12 +45,62 @@ Each module is versioned and published as an independent artifact, while remaini
 
 Andromeda provides a **Bill of Materials (BOM)** to ensure all modules work seamlessly together.
 
-#### LATEST_VERSION [![](https://jitpack.io/v/farsroidx/andromeda.svg)](https://jitpack.io/#farsroidx/andromeda)
-
+##### in `settings.gradle.kts`:
 ```kotlin
-implementation(platform("com.github.farsroidx:andromeda-bom:🔝LATEST_VERSION🔝"))
+@Suppress("UnstableApiUsage")
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        maven(url = "https://jitpack.io") <------
+    }
+}
+```
 
-implementation("com.github.farsroidx:andromeda-foundation")
-implementation("com.github.farsroidx:andromeda-core")
-implementation("com.github.farsroidx:andromeda-logger")
-implementation("com.github.farsroidx:andromeda-viewmodel")
+##### in `libs.versions.toml`:
+> ###### LATEST_VERSION: [![](https://jitpack.io/v/farsroidx/andromeda-bom.svg)](https://jitpack.io/#farsroidx/andromeda-bom)
+```toml
+[versions]
+andromeda-bom = "🔝LATEST_VERSION🔝"
+
+[libraries]
+andromeda-bom            = { module = "com.github.farsroidx:andromeda-bom"            , version.ref = "andromeda-bom" }
+andromeda-foundation     = { module = "com.github.farsroidx:andromeda-foundation"                                     }
+andromeda-foundation-ktx = { module = "com.github.farsroidx:andromeda-foundation-ktx"                                 }
+andromeda-koin           = { module = "com.github.farsroidx:andromeda-koin"                                           }
+andromeda-ktx            = { module = "com.github.farsroidx:andromeda-ktx"                                            }
+andromeda-logging        = { module = "com.github.farsroidx:andromeda-logging"                                        }
+andromeda-ui             = { module = "com.github.farsroidx:andromeda-ui"                                             }
+andromeda-ui-ktx         = { module = "com.github.farsroidx:andromeda-ui-ktx"                                         }
+andromeda-viewmodel      = { module = "com.github.farsroidx:andromeda-viewmodel"                                      }
+
+[bundles]
+andromeda = [
+    "andromeda-foundation",
+    "andromeda-foundation-ktx",
+    "andromeda-koin",
+    "andromeda-ktx",
+    "andromeda-logging",
+    "andromeda-ui",
+    "andromeda-ui-ktx",
+    "andromeda-viewmodel"
+]
+```
+
+##### in `build.gradle.kts`:
+```kotlin
+dependencies {
+
+    implementation(
+        platform(
+            libs.andromeda.bom
+        )
+    )
+
+    implementation(libs.bundles.andromeda)
+}
+```
+
+[![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](https://github.com/farsroidx)

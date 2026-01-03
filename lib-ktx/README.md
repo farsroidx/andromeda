@@ -1,8 +1,8 @@
-# Andromeda Logging ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+# Andromeda Ktx ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
 
 farsroidx pre-built codes for faster and easier Android app development.
 
-> ![GitHub repo size](https://img.shields.io/github/repo-size/farsroidx/andromeda-logging)
+> ![GitHub repo size](https://img.shields.io/github/repo-size/farsroidx/andromeda-ktx)
 
 ### Installation:
 
@@ -20,12 +20,12 @@ dependencyResolutionManagement {
 }
 ```
 
-> ###### LATEST_VERSION: [![](https://jitpack.io/v/farsroidx/andromeda-logging.svg)](https://jitpack.io/#farsroidx/andromeda-logging)
+> ###### LATEST_VERSION: [![](https://jitpack.io/v/farsroidx/andromeda-ktx.svg)](https://jitpack.io/#farsroidx/andromeda-ktx)
 
 ##### in `build.gradle.kts`:
 ```kotlin
 dependencies {
-    implementation("com.github.farsroidx:andromeda-logging:🔝LATEST_VERSION🔝")
+    implementation("com.github.farsroidx:andromeda-ktx:🔝LATEST_VERSION🔝")
 }
 ```
 
