@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.maven.publish)
 }
 
+version = "2.1.0"
+
 android {
 
     namespace  = "ir.farsroidx.andromeda.foundation"
@@ -66,9 +68,10 @@ afterEvaluate {
 
             register<MavenPublication>("release") {
 
-                groupId    = "com.github.farsroidx"
+                groupId = group.toString()
+                version = version.toString()
+
                 artifactId = "andromeda-foundation"
-                version    = "1.0.0"
 
                 from( components["release"] )
             }
