@@ -10,7 +10,7 @@ allprojects {
 
     group = "com.github.farsroidx"
 
-    version = "2026.01.01"
+    version = "2026.01.04"
 
 }
 
@@ -30,4 +30,22 @@ tasks.register("publishAndromedaToMavenLocal") {
     dependsOn(publishTasks)
 
     dependsOn(":bom:publishToMavenLocal")
+}
+
+tasks.register("publishAndromedaForJitPack") {
+
+    group       = "publishing"
+    description = "Publishes all Andromeda libraries and BOM for JitPack."
+
+    val publishTasks = subprojects
+        .filter { it.name.startsWith("lib-") }
+        .map { it.tasks.named("publish") }
+
+    dependsOn(publishTasks)
+
+    dependsOn(":bom:publish")
+
+    doLast {
+        println("Build finished with rootProject version: ${rootProject.version}")
+    }
 }

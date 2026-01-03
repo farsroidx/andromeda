@@ -26,8 +26,12 @@ rootProject.name = "Andromeda"
 include(":app")
 
 include(":bom")
-include(":lib-core")
+//include(":lib-annotation")
 include(":lib-foundation")
+include(":lib-foundation-ktx")
 include(":lib-koin")
+include(":lib-ktx")
 include(":lib-logging")
+include(":lib-ui")
+include(":lib-ui-ktx")
 include(":lib-viewmodel")

@@ -60,17 +60,26 @@ dependencies {
     )
 
     // noinspection UseTomlInstead
-    implementation("com.github.farsroidx:andromeda-core")
+//    implementation("com.github.farsroidx:andromeda-foundation")
 
     // noinspection UseTomlInstead
-    implementation("com.github.farsroidx:andromeda-foundation")
+//    implementation("com.github.farsroidx:andromeda-foundation-ktx")
 
     // noinspection UseTomlInstead
-    implementation("com.github.farsroidx:andromeda-koin")
+//    implementation("com.github.farsroidx:andromeda-koin")
 
     // noinspection UseTomlInstead
-    implementation("com.github.farsroidx:andromeda-logging")
+//    implementation("com.github.farsroidx:andromeda-ktx")
 
     // noinspection UseTomlInstead
-    implementation("com.github.farsroidx:andromeda-viewmodel")
+//    implementation("com.github.farsroidx:andromeda-logging")
+
+    // noinspection UseTomlInstead
+//    implementation("com.github.farsroidx:andromeda-ui")
+
+    // noinspection UseTomlInstead
+//    implementation("com.github.farsroidx:andromeda-ui-ktx")
+
+    // noinspection UseTomlInstead
+//    implementation("com.github.farsroidx:andromeda-viewmodel")
 }

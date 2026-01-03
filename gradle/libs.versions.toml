@@ -8,6 +8,8 @@ androidx-core-ktx             = "1.17.0"
 androidx-appcompat            = "1.7.1"
 androidx-activity             = "1.12.2"
 androidx-fragment             = "1.8.9"
+androidx-recyclerview         = "1.4.0"
+androidx-annotation-jvm       = "1.9.1"
 # Lifecycle ----------------------------------------------------------------------------------------
 androidx-lifecycle            = "2.10.0"
 # Compose ------------------------------------------------------------------------------------------
@@ -26,10 +28,12 @@ test-espresso-core            = "3.7.0"
 
 [libraries]
 # Androidx -----------------------------------------------------------------------------------------
-androidx-core      = { group = "androidx.core"      , name = "core-ktx"     , version.ref = "androidx-core-ktx"  }
-androidx-activity  = { group = "androidx.activity"  , name = "activity-ktx" , version.ref = "androidx-activity"  }
-androidx-fragment  = { group = "androidx.fragment"  , name = "fragment-ktx" , version.ref = "androidx-fragment"  }
-androidx-appcompat = { group = "androidx.appcompat" , name = "appcompat"    , version.ref = "androidx-appcompat" }
+androidx-core           = { group = "androidx.core"         , name = "core-ktx"       , version.ref = "androidx-core-ktx"       }
+androidx-activity       = { group = "androidx.activity"     , name = "activity-ktx"   , version.ref = "androidx-activity"       }
+androidx-fragment       = { group = "androidx.fragment"     , name = "fragment-ktx"   , version.ref = "androidx-fragment"       }
+androidx-appcompat      = { group = "androidx.appcompat"    , name = "appcompat"      , version.ref = "androidx-appcompat"      }
+androidx-recyclerview   = { group = "androidx.recyclerview" , name = "recyclerview"   , version.ref = "androidx-recyclerview"   }
+androidx-annotation-jvm = { group = "androidx.annotation"   , name = "annotation-jvm" , version.ref = "androidx-annotation-jvm" }
 # Lifecycle ----------------------------------------------------------------------------------------
 androidx-lifecycle-runtime-ktx   = { group = "androidx.lifecycle" , name = "lifecycle-runtime-ktx"   , version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle" , name = "lifecycle-viewmodel-ktx" , version.ref = "androidx-lifecycle" }
@@ -57,9 +61,10 @@ jetbrains-kotlin-kapt          = { id = "org.jetbrains.kotlin.kapt"             
 jetbrains-kotlin-android       = { id = "org.jetbrains.kotlin.android"              , version.ref = "kotlin" }
 jetbrains-kotlin-jvm           = { id = "org.jetbrains.kotlin.jvm"                  , version.ref = "kotlin" }
 jetbrains-kotlin-compose       = { id = "org.jetbrains.kotlin.plugin.compose"       , version.ref = "kotlin" }
-jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization" , version.ref = "kotlin" }
 jetbrains-kotlin-parcelize     = { id = "org.jetbrains.kotlin.plugin.parcelize"     , version.ref = "kotlin" }
+jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization" , version.ref = "kotlin" }
 # Java ---------------------------------------------------------------------------------------------
+java-library  = { id = "java-library" }
 java-platform = { id = "java-platform" }
 # Maven --------------------------------------------------------------------------------------------
 maven-publish = { id = "maven-publish" }
