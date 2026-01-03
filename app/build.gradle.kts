@@ -2,6 +2,7 @@ plugins {
     // android
     alias(libs.plugins.android.application)
     // jetbrains
+    alias(libs.plugins.jetbrains.kotlin.kapt)
     alias(libs.plugins.jetbrains.kotlin.android)
 }
 
@@ -44,13 +45,32 @@ android {
     kotlin {
         jvmToolchain(17)
     }
+
+    buildFeatures {
+        dataBinding = true
+    }
 }
 
 dependencies {
 
-    implementation(projects.libViewmodel)
-    implementation(projects.libKoin)
-    implementation(projects.libLogging)
-    implementation(projects.libFoundation)
+    implementation(
+        platform(
+            notation = "com.github.farsroidx:andromeda-bom:${rootProject.version}"
+        )
+    )
 
+    // noinspection UseTomlInstead
+    implementation("com.github.farsroidx:andromeda-core")
+
+    // noinspection UseTomlInstead
+    implementation("com.github.farsroidx:andromeda-foundation")
+
+    // noinspection UseTomlInstead
+    implementation("com.github.farsroidx:andromeda-koin")
+
+    // noinspection UseTomlInstead
+    implementation("com.github.farsroidx:andromeda-logging")
+
+    // noinspection UseTomlInstead
+    implementation("com.github.farsroidx:andromeda-viewmodel")
 }

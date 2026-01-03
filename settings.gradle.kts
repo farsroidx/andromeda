@@ -25,11 +25,9 @@ rootProject.name = "Andromeda"
 
 include(":app")
 
-private val libraries = arrayOf(
-    ":lib-foundation",
-    ":lib-koin",
-    ":lib-logging",
-    ":lib-viewmodel",
-)
-
-include(*libraries)
+include(":bom")
+include(":lib-core")
+include(":lib-foundation")
+include(":lib-koin")
+include(":lib-logging")
+include(":lib-viewmodel")
