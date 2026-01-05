@@ -8,9 +8,9 @@ plugins {
 
 allprojects {
 
-    group = "com.github.farsroidx"
+    group = "ir.farsroidx"
 
-    version = "2026.01.04"
+    version = "2026.01.05"
 
 }
 
@@ -32,13 +32,16 @@ tasks.register("publishAndromedaToMavenLocal") {
     dependsOn(":bom:publishToMavenLocal")
 }
 
-tasks.register("publishAndromedaForJitPack") {
+tasks.register("publishAndromedaToMavenCentral") {
 
     group       = "publishing"
-    description = "Publishes all Andromeda libraries and BOM for JitPack."
+    description = "Publishes all Andromeda libraries and BOM to Sonatype OSSRH."
 
     val publishTasks = subprojects
-        .filter { it.name.startsWith("lib-") }
+        .filter {
+            it.plugins.hasPlugin("maven-publish") &&
+                !it.name.contains("bom", true)
+        }
         .map { it.tasks.named("publish") }
 
     dependsOn(publishTasks)

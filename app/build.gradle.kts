@@ -53,33 +53,33 @@ android {
 
 dependencies {
 
-//    implementation(
-//        platform(
-//            notation = "com.github.farsroidx:andromeda-bom:${rootProject.version}"
-//        )
-//    )
+    implementation(
+        platform(
+            notation = "ir.farsroidx:andromeda-bom:${rootProject.version}"
+        )
+    )
 
     // noinspection UseTomlInstead
-//    implementation("com.github.farsroidx:andromeda-foundation")
+//    implementation("ir.farsroidx:andromeda-foundation")
 
     // noinspection UseTomlInstead
-//    implementation("com.github.farsroidx:andromeda-foundation-ktx")
+//    implementation("ir.farsroidx:andromeda-foundation-ktx")
 
     // noinspection UseTomlInstead
-//    implementation("com.github.farsroidx:andromeda-koin")
+//    implementation("ir.farsroidx:andromeda-koin")
 
     // noinspection UseTomlInstead
-//    implementation("com.github.farsroidx:andromeda-ktx")
+//    implementation("ir.farsroidx:andromeda-ktx")
 
     // noinspection UseTomlInstead
-//    implementation("com.github.farsroidx:andromeda-logging")
+//    implementation("ir.farsroidx:andromeda-logging")
 
     // noinspection UseTomlInstead
-//    implementation("com.github.farsroidx:andromeda-ui")
+//    implementation("ir.farsroidx:andromeda-ui")
 
     // noinspection UseTomlInstead
-//    implementation("com.github.farsroidx:andromeda-ui-ktx")
+//    implementation("ir.farsroidx:andromeda-ui-ktx")
 
     // noinspection UseTomlInstead
-//    implementation("com.github.farsroidx:andromeda-viewmodel")
+//    implementation("ir.farsroidx:andromeda-viewmodel")
 }

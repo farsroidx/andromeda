@@ -14,9 +14,6 @@ androidx-annotation-jvm       = "1.9.1"
 androidx-lifecycle            = "2.10.0"
 # Compose ------------------------------------------------------------------------------------------
 androidx-compose-runtime      = "1.10.0"
-# Koin ---------------------------------------------------------------------------------------------
-koin-core                     = "4.1.1"
-koin-android                  = "4.1.1"
 # Jetbrains ----------------------------------------------------------------------------------------
 kotlinx-coroutines            = "1.10.2"
 kotlinx-serialization         = "1.9.0"
@@ -39,9 +36,6 @@ androidx-lifecycle-runtime-ktx   = { group = "androidx.lifecycle" , name = "life
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle" , name = "lifecycle-viewmodel-ktx" , version.ref = "androidx-lifecycle" }
 # Compose ------------------------------------------------------------------------------------------
 androidx-compose-runtime = { group = "androidx.compose.runtime" , name = "runtime" , version.ref = "androidx-compose-runtime" }
-# Koin ---------------------------------------------------------------------------------------------
-koin-core    = { group = "io.insert-koin" , name = "koin-core"    , version.ref = "koin-core"    }
-koin-android = { group = "io.insert-koin" , name = "koin-android" , version.ref = "koin-android" }
 # Jetbrains ----------------------------------------------------------------------------------------
 jetbrains-kotlinx-coroutines-android    = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android"    , version.ref = "kotlinx-coroutines"            }
 jetbrains-kotlinx-serialization-core    = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core"    , version.ref = "kotlinx-serialization"         }
@@ -68,3 +62,5 @@ java-library  = { id = "java-library" }
 java-platform = { id = "java-platform" }
 # Maven --------------------------------------------------------------------------------------------
 maven-publish = { id = "maven-publish" }
+# BuilLogic ----------------------------------------------------------------------------------------
+sonatype = { id = "sonatype" }
