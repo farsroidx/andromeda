@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     // maven
     alias(libs.plugins.maven.publish)
+    // buildLogic
+    alias(libs.plugins.sonatype)
 }
 
 version = "1.0.0"
@@ -75,12 +77,9 @@ afterEvaluate {
 
             register<MavenPublication>("release") {
 
-                groupId = group.toString()
-                version = version.toString()
-
-                artifactId = "andromeda-ui-ktx"
-
                 from( components["release"] )
+
+                addPom(Module.UI_KTX, group = group.toString(), version = version.toString())
             }
         }
     }

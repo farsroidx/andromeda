@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     // maven
     alias(libs.plugins.maven.publish)
+    // buildLogic
+    alias(libs.plugins.sonatype)
 }
 
 version = "2.2.1"
@@ -75,12 +77,9 @@ afterEvaluate {
 
             register<MavenPublication>("release") {
 
-                groupId = group.toString()
-                version = version.toString()
-
-                artifactId = "andromeda-viewmodel"
-
                 from( components["release"] )
+
+                addPom(Module.VIEWMODEL, group = group.toString(), version = version.toString())
             }
         }
     }
