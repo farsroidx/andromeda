@@ -1,13 +1,12 @@
 import kotlin.text.replace
 
 plugins {
-
     // github
     alias(libs.plugins.java.platform)
-
     // maven
     alias(libs.plugins.maven.publish)
-
+    // buildLogic
+    alias(libs.plugins.sonatype)
 }
 
 javaPlatform { allowDependencies() }
@@ -48,12 +47,9 @@ afterEvaluate {
 
             register<MavenPublication>("maven") {
 
-                groupId = group.toString()
-                version = version.toString()
-
-                artifactId = "andromeda-bom"
-
                 from(components["javaPlatform"])
+
+                addPom(Module.BOM, group = group.toString(), version = version.toString())
             }
         }
     }
