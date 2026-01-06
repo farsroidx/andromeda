@@ -7,35 +7,6 @@ plugins {
 
 afterEvaluate {
 
-    publishing {
-
-        repositories {
-
-            maven {
-
-                this.name = "Sonatype"
-
-                this.url = if (isSnapshotBuild()) {
-                    uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-                } else {
-                    uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-                }
-
-                val username = findLocalProperty(key = "sonatype.username")
-                val password = findLocalProperty(key = "sonatype.password")
-
-                if (username.isBlank() || password.isBlank()) {
-                    throw IllegalArgumentException("sonatype.username or sonatype.password is missing from local.properties.")
-                }
-
-                this.credentials {
-                    this.username = findLocalProperty(key = "sonatype.username")
-                    this.password = findLocalProperty(key = "sonatype.password")
-                }
-            }
-        }
-    }
-
     signing {
 
         val filePath = findLocalProperty(key = "signing.filePath")

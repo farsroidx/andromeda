@@ -1,3 +1,5 @@
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
+
 plugins {
     // android
     alias(libs.plugins.android.application) apply false
@@ -12,7 +14,7 @@ allprojects {
 
     group = "ir.farsroidx"
 
-    version = "2026.01.05"
+    version = "2026.01.07"
 
 }
 
@@ -46,8 +48,8 @@ subprojects {
     }
 }
 
-fun Project.configureKtLint(android: Boolean) {
-    extensions.configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+private fun Project.configureKtLint(android: Boolean) {
+    extensions.configure<KtlintExtension> {
         this.version.set("1.8.0")
         this.android.set(android)
         this.ignoreFailures.set(false)
@@ -88,7 +90,6 @@ tasks.register("ktlintFormatAndCheck") {
     dependsOn(checkTasks)
 }
 
-
 tasks.register("publishAndromedaToMavenLocal") {
 
     group       = "publishing"
@@ -96,7 +97,8 @@ tasks.register("publishAndromedaToMavenLocal") {
 
     val publishTasks = subprojects
         .filter { project ->
-            project.name.startsWith("lib-")
+            project.plugins.hasPlugin("maven-publish") &&
+                !project.name.contains("bom", true)
         }
         .map { project ->
             project.tasks.named("publishToMavenLocal")
@@ -105,25 +107,85 @@ tasks.register("publishAndromedaToMavenLocal") {
     dependsOn(publishTasks)
 
     dependsOn(":bom:publishToMavenLocal")
-}
 
-tasks.register("publishAndromedaToMavenCentral") {
-
-    group       = "publishing"
-    description = "Publishes all Andromeda libraries and BOM to Sonatype OSSRH."
-
-    val publishTasks = subprojects
-        .filter {
-            it.plugins.hasPlugin("maven-publish") &&
-                !it.name.contains("bom", true)
-        }
-        .map { it.tasks.named("publish") }
-
-    dependsOn(publishTasks)
-
-    dependsOn(":bom:publish")
+    finalizedBy("generateChecksums")
 
     doLast {
-        println("Build finished with rootProject version: ${rootProject.version}")
+        println("Build finished with BOM version: ${rootProject.version}")
+    }
+}
+
+tasks.register("generateChecksums") {
+
+    group       = "publishing"
+    description = "Generate MD5 and SHA1 checksums for all modules before publishing to Maven Local"
+
+    mustRunAfter(tasks.withType<AbstractPublishToMaven>())
+
+    doLast {
+
+        val mavenLocalRepo = File(System.getProperty("user.home"), ".m2/repository")
+
+        val groupPath = "ir/farsroidx"
+
+        val ourRepoDir = File(mavenLocalRepo, groupPath)
+
+        if (ourRepoDir.exists()) {
+
+            println("🔍 Searching for artifacts in: ${ourRepoDir.absolutePath}")
+
+            ourRepoDir.walkTopDown()
+                .filter { it.isFile }
+                .forEach { file ->
+
+                    val isArtifactFile = file.name.matches(Regex(""".*\.(aar|jar|pom|module)$"""))
+                    val isChecksumFile = file.name.matches(Regex(""".*\.(md5|sha1|sha256|asc)$"""))
+
+                    if (isArtifactFile && !isChecksumFile) {
+
+                        val md5File = File(file.parent, "${file.name}.md5")
+                        val sha1File = File(file.parent, "${file.name}.sha1")
+
+                        if (!md5File.exists() || !sha1File.exists()) {
+
+                            try {
+
+                                val bytes = file.readBytes()
+
+                                if (!md5File.exists()) {
+
+                                    val md5 = java.security.MessageDigest.getInstance("MD5")
+                                        .digest(bytes)
+                                        .joinToString("") { "%02x".format(it) }
+
+                                    md5File.writeText(md5)
+
+                                    println("✓ Generated MD5 for: ${file.relativeTo(mavenLocalRepo)}")
+                                }
+
+                                if (!sha1File.exists()) {
+
+                                    val sha1 = java.security.MessageDigest.getInstance("SHA-1")
+                                        .digest(bytes)
+                                        .joinToString("") { "%02x".format(it) }
+
+                                    sha1File.writeText(sha1)
+
+                                    println("✓ Generated SHA1 for: ${file.relativeTo(mavenLocalRepo)}")
+                                }
+
+                            } catch (e: java.io.IOException) {
+
+                                println("⚠️ IO error generating checksums for ${file.name}: ${e.message}")
+
+                            } catch (e: java.security.NoSuchAlgorithmException) {
+
+                                println("⚠️ Algorithm not found when generating checksums for ${file.name}: ${e.message}")
+
+                            }
+                        }
+                    }
+                }
+        }
     }
 }
