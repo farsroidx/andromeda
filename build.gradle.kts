@@ -174,8 +174,14 @@ tasks.register("generateChecksums") {
                                     println("✓ Generated SHA1 for: ${file.relativeTo(mavenLocalRepo)}")
                                 }
 
-                            } catch (e: Exception) {
-                                println("⚠️ Error generating checksums for ${file.name}: ${e.message}")
+                            } catch (e: java.io.IOException) {
+
+                                println("⚠️ IO error generating checksums for ${file.name}: ${e.message}")
+
+                            } catch (e: java.security.NoSuchAlgorithmException) {
+
+                                println("⚠️ Algorithm not found when generating checksums for ${file.name}: ${e.message}")
+
                             }
                         }
                     }
