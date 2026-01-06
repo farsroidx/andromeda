@@ -22,18 +22,18 @@ import java.lang.reflect.ParameterizedType
  *
  * @author Android Principal Engineer
  */
-abstract class AndromedaActivity<B: ViewDataBinding, V: ViewModel> : AppCompatActivity() {
-
+abstract class AndromedaActivity<B : ViewDataBinding, V : ViewModel> : AppCompatActivity() {
     private var _binding: B? = null
 
     /**
      * Access to the binding instance.
      * Throws [IllegalStateException] if accessed before [onCreate] or after destruction.
      */
-    protected val binding: B
-        get() = _binding ?: throw IllegalStateException(
-            "Binding for ${this::class.java.simpleName} is only available between onCreate and onDestroy."
-        )
+    val binding: B
+        get() =
+            _binding ?: throw IllegalStateException(
+                "Binding for ${this::class.java.simpleName} is only available between onCreate and onDestroy.",
+            )
 
     /**
      * Lazily initialized ViewModel resolved from generic type parameters.
@@ -41,7 +41,6 @@ abstract class AndromedaActivity<B: ViewDataBinding, V: ViewModel> : AppCompatAc
     protected val viewModel: V by lazyViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         onBeforeInitializing(savedInstanceState)
 
         super.onCreate(savedInstanceState)
@@ -82,20 +81,19 @@ abstract class AndromedaActivity<B: ViewDataBinding, V: ViewModel> : AppCompatAc
 
     @Suppress("UNCHECKED_CAST")
     private fun inflateBindingInternal(): B {
-        val bindingClass  = resolveGenericType<B>(0)
+        val bindingClass = resolveGenericType<B>(0)
         val inflateMethod = bindingClass.getMethod("inflate", LayoutInflater::class.java)
         return inflateMethod.invoke(null, layoutInflater) as B
     }
 
     @MainThread
-    private fun lazyViewModel(): Lazy<V> {
-        return ViewModelLazy(
-            viewModelClass  = resolveGenericType<V>(1).kotlin,
-            storeProducer   = { viewModelStore                  },
+    private fun lazyViewModel(): Lazy<V> =
+        ViewModelLazy(
+            viewModelClass = resolveGenericType<V>(1).kotlin,
+            storeProducer = { viewModelStore },
             factoryProducer = { defaultViewModelProviderFactory },
-            extrasProducer  = { defaultViewModelCreationExtras  }
+            extrasProducer = { defaultViewModelCreationExtras },
         )
-    }
 
     /**
      * Recursively searches for generic type arguments in the class hierarchy.
@@ -103,15 +101,12 @@ abstract class AndromedaActivity<B: ViewDataBinding, V: ViewModel> : AppCompatAc
      */
     @Suppress("UNCHECKED_CAST")
     private fun <T> resolveGenericType(index: Int): Class<T> {
-
         var currentClass: Class<*>? = javaClass
 
         while (currentClass != null && currentClass != AndromedaActivity::class.java) {
-
             val genericSuperclass = currentClass.genericSuperclass
 
             if (genericSuperclass is ParameterizedType) {
-
                 val type = genericSuperclass.actualTypeArguments.getOrNull(index)
 
                 if (type is Class<*>) return type as Class<T>

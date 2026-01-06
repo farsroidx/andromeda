@@ -24,18 +24,18 @@ import java.lang.reflect.ParameterizedType
  *
  * @author Android Principal Engineer
  */
-abstract class AndromedaFragment<B: ViewDataBinding, V: ViewModel> : Fragment() {
-
+abstract class AndromedaFragment<B : ViewDataBinding, V : ViewModel> : Fragment() {
     private var _binding: B? = null
 
     /**
      * Accessor for the binding instance.
      * Valid only between [onCreateView] and [onDestroyView].
      */
-    protected val binding: B
-        get() = _binding ?: throw IllegalStateException(
-            "Binding for ${this::class.java.simpleName} is only available between onCreateView and onDestroyView."
-        )
+    val binding: B
+        get() =
+            _binding ?: throw IllegalStateException(
+                "Binding for ${this::class.java.simpleName} is only available between onCreateView and onDestroyView.",
+            )
 
     /**
      * Lazily initialized ViewModel.
@@ -46,21 +46,16 @@ abstract class AndromedaFragment<B: ViewDataBinding, V: ViewModel> : Fragment() 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-
         if (_binding == null) {
-
             _binding = inflateBindingInternal(inflater, container)
 
             binding.lifecycleOwner = viewLifecycleOwner
 
             binding.onInitialized(savedInstanceState)
-
         } else {
-
             binding.onReInitializing(savedInstanceState)
-
         }
 
         return binding.root
@@ -87,44 +82,43 @@ abstract class AndromedaFragment<B: ViewDataBinding, V: ViewModel> : Fragment() 
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun inflateBindingInternal(inflater: LayoutInflater, container: ViewGroup?): B {
-
+    private fun inflateBindingInternal(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+    ): B {
         val bindingClass = resolveGenericType<B>(0)
 
-        val inflateMethod = bindingClass.getMethod(
-            "inflate",
-            LayoutInflater::class.java,
-            ViewGroup::class.java,
-            Boolean::class.javaPrimitiveType
-        )
+        val inflateMethod =
+            bindingClass.getMethod(
+                "inflate",
+                LayoutInflater::class.java,
+                ViewGroup::class.java,
+                Boolean::class.javaPrimitiveType,
+            )
 
         return inflateMethod.invoke(null, inflater, container, false) as B
     }
 
     @MainThread
-    private fun lazyViewModel(): Lazy<V> {
-        return ViewModelLazy(
-            viewModelClass  = resolveGenericType<V>(1).kotlin,
-            storeProducer   = { viewModelStore },
+    private fun lazyViewModel(): Lazy<V> =
+        ViewModelLazy(
+            viewModelClass = resolveGenericType<V>(1).kotlin,
+            storeProducer = { viewModelStore },
             factoryProducer = { defaultViewModelProviderFactory },
-            extrasProducer  = { defaultViewModelCreationExtras }
+            extrasProducer = { defaultViewModelCreationExtras },
         )
-    }
 
     /**
      * Recursively resolves the generic type argument to support deep inheritance.
      */
     @Suppress("UNCHECKED_CAST")
     private fun <T> resolveGenericType(index: Int): Class<T> {
-
         var currentClass: Class<*>? = javaClass
 
         while (currentClass != null && currentClass != AndromedaFragment::class.java) {
-
             val genericSuperclass = currentClass.genericSuperclass
 
             if (genericSuperclass is ParameterizedType) {
-
                 val type = genericSuperclass.actualTypeArguments.getOrNull(index)
 
                 if (type is Class<*>) return type as Class<T>
