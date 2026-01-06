@@ -12,16 +12,19 @@ import javax.security.auth.callback.Callback
  * This prevents redundant calls from resetting the policies multiple times.
  */
 fun initDebugMode() {
+    val vmPolicy =
+        StrictMode.VmPolicy
+            .Builder()
+            .detectAll()
+            .penaltyLog()
+            .build()
 
-    val vmPolicy = StrictMode.VmPolicy.Builder()
-        .detectAll()
-        .penaltyLog()
-        .build()
-
-    val threadPolicy = StrictMode.ThreadPolicy.Builder()
-        .detectAll()
-        .penaltyLog()
-        .build()
+    val threadPolicy =
+        StrictMode.ThreadPolicy
+            .Builder()
+            .detectAll()
+            .penaltyLog()
+            .build()
 
     StrictMode.setVmPolicy(vmPolicy)
 
@@ -37,41 +40,38 @@ private var fpsCallback: Choreographer.FrameCallback? = null
  * Starts monitoring the FPS (Frames Per Second) of the application.
  */
 fun startFpsMonitoring(callback: (fps: Long) -> Unit) {
-
     if (fpsCallback != null) return // Prevent multiple instances
 
-    fpsCallback = object : Choreographer.FrameCallback {
+    fpsCallback =
+        object : Choreographer.FrameCallback {
+            var lastTimeNanos: Long = 0
 
-        var lastTimeNanos: Long = 0
+            var frameCount = 0
 
-        var frameCount = 0
+            override fun doFrame(frameTimeNanos: Long) {
+                if (lastTimeNanos == 0L) {
+                    lastTimeNanos = frameTimeNanos
+                }
 
-        override fun doFrame(frameTimeNanos: Long) {
+                val diff = frameTimeNanos - lastTimeNanos
 
-            if (lastTimeNanos == 0L) {
-                lastTimeNanos = frameTimeNanos
+                frameCount++
+
+                if (diff >= 1_000_000_000) {
+                    val fps = frameCount * 1_000_000_000 / diff
+
+                    callback(fps)
+
+                    Log.d("AndromedaCore", "Current FPS: $fps")
+
+                    lastTimeNanos = frameTimeNanos
+
+                    frameCount = 0
+                }
+
+                fpsCallback?.let { Choreographer.getInstance().postFrameCallback(it) }
             }
-
-            val diff = frameTimeNanos - lastTimeNanos
-
-            frameCount++
-
-            if (diff >= 1_000_000_000) {
-
-                val fps = frameCount * 1_000_000_000 / diff
-
-                callback(fps)
-
-                Log.d("AndromedaCore", "Current FPS: $fps")
-
-                lastTimeNanos = frameTimeNanos
-
-                frameCount = 0
-            }
-
-            fpsCallback?.let { Choreographer.getInstance().postFrameCallback(it) }
         }
-    }
 
     fpsCallback?.let { Choreographer.getInstance().postFrameCallback(it) }
 }

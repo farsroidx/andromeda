@@ -15,18 +15,10 @@ val Int.dp: Int
 val Float.dp: Float
     get() = (this / Resources.getSystem().displayMetrics.density)
 
-fun Int.dpToPx(context: Context): Float {
-    return (this * context.resources.displayMetrics.density)
-}
+fun Int.dpToPx(context: Context): Float = (this * context.resources.displayMetrics.density)
 
-fun Float.dpToPx(context: Context): Float {
-    return (this * context.resources.displayMetrics.density)
-}
+fun Float.dpToPx(context: Context): Float = (this * context.resources.displayMetrics.density)
 
-fun Int.pxToDp(context: Context): Float {
-    return (this / context.resources.displayMetrics.density)
-}
+fun Int.pxToDp(context: Context): Float = (this / context.resources.displayMetrics.density)
 
-fun Float.pxToDp(context: Context): Float {
-    return (this / context.resources.displayMetrics.density)
-}
+fun Float.pxToDp(context: Context): Float = (this / context.resources.displayMetrics.density)

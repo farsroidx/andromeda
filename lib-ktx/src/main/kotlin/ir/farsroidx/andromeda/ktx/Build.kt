@@ -295,7 +295,6 @@ fun isAndroid15() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CRE
 fun isAndroid16() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA
 
 private fun function() {
-
     if (isAndroid11()) {
         myRequiresApi()
     }

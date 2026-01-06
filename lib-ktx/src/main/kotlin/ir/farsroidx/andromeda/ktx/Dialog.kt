@@ -12,38 +12,44 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 
 fun Fragment.progressDialog(
-    message: String, title: String? = null, @StyleRes styleResId: Int? = null
+    message: String,
+    title: String? = null,
+    @StyleRes styleResId: Int? = null,
 ) = requireContext().progressDialog(message, title, styleResId)
 
 fun Fragment.alertDialog(
-    @StyleRes styleResId: Int?, invoker: AlertDialog.Builder.() -> Unit
+    @StyleRes styleResId: Int?,
+    invoker: AlertDialog.Builder.() -> Unit,
 ) = requireContext().alertDialog(styleResId, invoker)
 
 fun Context.alertDialog(
-    @StyleRes styleResId: Int? = null, invoker: AlertDialog.Builder.() -> Unit
+    @StyleRes styleResId: Int? = null,
+    invoker: AlertDialog.Builder.() -> Unit,
 ): AlertDialog {
-
-    val dialog = if (styleResId == null) {
-        AlertDialog.Builder(this)
-    } else {
-        AlertDialog.Builder(this, styleResId)
-    }
+    val dialog =
+        if (styleResId == null) {
+            AlertDialog.Builder(this)
+        } else {
+            AlertDialog.Builder(this, styleResId)
+        }
 
     return dialog.apply(invoker).create()
 }
 
 fun Context.progressDialog(
-    message: String, title: String? = null, @StyleRes styleResId: Int? = null
+    message: String,
+    title: String? = null,
+    @StyleRes styleResId: Int? = null,
 ): ProgressDialog {
-
-    val dialog = if (styleResId == null) {
-        ProgressDialog(this)
-    } else {
-        ProgressDialog(this, styleResId)
-    }
+    val dialog =
+        if (styleResId == null) {
+            ProgressDialog(this)
+        } else {
+            ProgressDialog(this, styleResId)
+        }
 
     return dialog.apply {
-        progress        = 0
+        progress = 0
         isIndeterminate = true
         setCancelable(false)
         setMessage(message)
@@ -69,14 +75,12 @@ fun AlertDialog?.dismissDialog() {
 
 @JvmOverloads
 fun AlertDialog.showStyledDialog(buttonOrientation: Int = LinearLayout.HORIZONTAL) {
-
     if (this.isShowing) return
 
     this.show().apply {
-
         val positive = getButton(AlertDialog.BUTTON_POSITIVE)
         val negative = getButton(AlertDialog.BUTTON_NEGATIVE)
-        val neutral  = getButton(AlertDialog.BUTTON_NEUTRAL)
+        val neutral = getButton(AlertDialog.BUTTON_NEUTRAL)
 
         (positive.parent as? LinearLayout)?.let { layout ->
 
@@ -86,24 +90,25 @@ fun AlertDialog.showStyledDialog(buttonOrientation: Int = LinearLayout.HORIZONTA
 
             leftSpacer?.visibility = View.GONE
 
-            val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
+            val layoutParams =
+                LinearLayout
+                    .LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                    ).apply {
+                        if (buttonOrientation == LinearLayout.HORIZONTAL) {
+                            layout.orientation = LinearLayout.HORIZONTAL
+                        } else if (buttonOrientation == LinearLayout.VERTICAL) {
+                            layout.orientation = LinearLayout.VERTICAL
+                        }
+                    }
 
-                if (buttonOrientation == LinearLayout.HORIZONTAL) {
-                    layout.orientation = LinearLayout.HORIZONTAL
-                } else if (buttonOrientation == LinearLayout.VERTICAL) {
-                    layout.orientation = LinearLayout.VERTICAL
-                }
-            }
-
-            layoutParams.weight  = 1F
+            layoutParams.weight = 1F
             layoutParams.gravity = Gravity.CENTER
 
             positive.layoutParams = layoutParams
             negative.layoutParams = layoutParams
-            neutral.layoutParams  = layoutParams
+            neutral.layoutParams = layoutParams
         }
     }
 }

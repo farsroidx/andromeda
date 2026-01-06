@@ -20,7 +20,6 @@ val String.md5: String
 
             // Convert byte array to hexadecimal string
             BigInteger(1, hashBytes).toString(16).padStart(32, '0')
-
         } catch (e: NoSuchAlgorithmException) {
             // MD5 should be available on all Java platforms, but handle gracefully
             ""
@@ -44,7 +43,6 @@ val String.md5Optimized: String
             }
 
             hexString.toString()
-
         } catch (e: NoSuchAlgorithmException) {
             ""
         }

@@ -19,6 +19,8 @@ fun Fragment.getUniqueDeviceId(): String = requireContext().getUniqueDeviceId()
 
 @SuppressLint("HardwareIds")
 @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
-fun Context.getUniqueDeviceId(): String = Settings.Secure.getString(
-    contentResolver, Settings.Secure.ANDROID_ID
-)
+fun Context.getUniqueDeviceId(): String =
+    Settings.Secure.getString(
+        contentResolver,
+        Settings.Secure.ANDROID_ID,
+    )
