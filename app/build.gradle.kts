@@ -55,11 +55,11 @@ android {
 
 dependencies {
 
-    implementation(
-        platform(
-            notation = "ir.farsroidx:andromeda-bom:${rootProject.version}",
-        ),
-    )
+//    implementation(
+//        platform(
+//            notation = "ir.farsroidx:andromeda-bom:${rootProject.version}",
+//        ),
+//    )
 
     // noinspection UseTomlInstead
 //    implementation("ir.farsroidx:andromeda-foundation")
