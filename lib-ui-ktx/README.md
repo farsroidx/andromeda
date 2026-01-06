@@ -1,15 +1,26 @@
-# Andromeda Ui Ktx ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+# Andromeda Ui KTX ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white) ![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red.svg?style=for-the-badge&logo=heart&logoColor=white)
 
 farsroidx pre-built codes for faster and easier Android app development.
 
-> ![GitHub repo size](https://img.shields.io/github/repo-size/farsroidx/andromeda-ui-ktx)
+> 🪶 AAR Library Size: **~18KB**
 
-📌 Note:
-By adding `andromeda-ui-ktx`, you do not need to add `andromeda-ui` separately, as all its functionality is already included.
+---
 
-### Installation:
+📌 **Note**: By adding `andromeda-ui-ktx`, you do not need to add `andromeda-ui` separately, as all its functionality is already included.
 
-##### in `settings.gradle.kts`:
+---
+
+### 📦 Andromeda Libraries
+
+All **Andromeda libraries** are version-aligned and managed via a central **BOM** 🔒.  
+This ensures all subprojects use compatible versions automatically.
+
+🔗 **[View the Andromeda](../.)**  
+🔗 **[Check the BOM Module](../bom)**
+
+### Usage:
+
+##### 1. in `settings.gradle.kts`:
 ```kotlin
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
@@ -18,17 +29,32 @@ dependencyResolutionManagement {
         mavenLocal()
         mavenCentral()
         google()
-        maven(url = "https://jitpack.io") <------
     }
 }
 ```
 
-> ###### LATEST_VERSION: [![](https://jitpack.io/v/farsroidx/andromeda-ui-ktx.svg)](https://jitpack.io/#farsroidx/andromeda-ui-ktx)
+##### 2. in `libs.versions.toml`:
+[![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ui-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ui-ktx)
+```toml
+[versions]
+andromeda-bom = "🔝LATEST_VERSION🔝"
 
-##### in `build.gradle.kts`:
+[libraries]
+andromeda-bom    = { module = "ir.farsroidx:andromeda-bom", version.ref = "andromeda-bom" }
+andromeda-ui-ktx = { module = "ir.farsroidx:andromeda-ui-ktx"                             }
+```
+
+##### 3. in `build.gradle.kts`:
 ```kotlin
 dependencies {
-    implementation("com.github.farsroidx:andromeda-ui-ktx:🔝LATEST_VERSION🔝")
+
+    implementation(
+        platform(
+            libs.andromeda.bom
+        )
+    )
+    
+    implementation(libs.andromeda.ui.ktx)
 }
 ```
 

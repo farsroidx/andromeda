@@ -1,53 +1,43 @@
-# Andromeda-Bom ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+# Andromeda Bom ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white) ![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red.svg?style=for-the-badge&logo=heart&logoColor=white)
 
-A library for using pre-built codes
+farsroidx pre-built codes for faster and easier Android app development.
 
-> ![GitHub repo size](https://img.shields.io/github/repo-size/farsroidx/andromeda-bom)
+### Usage:
 
-### Installation:
-
-#### 1. Add JitPack Maven:
-
-##### in `settings.gradle`:
-```groovy
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        .
-        .
-        maven { url 'https://jitpack.io' } <------
-    }
-}
-```
-
-##### in `settings.gradle.kts`:
+##### 1. in `settings.gradle.kts`:
 ```kotlin
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        .
-        .
-        maven(url = "https://jitpack.io") <------
+        mavenLocal()
+        mavenCentral()
+        google()
     }
 }
 ```
 
-#### 2. Copy the following line in section `dependencies` in file `build.gradle` of module `app` and replace it with `LATEST_VERSION` according to the latest version in the repository:
+##### 2. in `libs.versions.toml`:
+[![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-bom.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-bom)
+```toml
+[versions]
+andromeda-bom = "🔝LATEST_VERSION🔝"
 
-### LATEST_VERSION: [![](https://jitpack.io/v/farsroidx/andromeda-bom.svg)](https://jitpack.io/#farsroidx/andromeda-bom)
-
-##### in `build.gradle`:
-```groovy
-dependencies {
-    implementation 'com.github.farsroidx:andromeda-bom:🔝LATEST_VERSION🔝'
-}
+[libraries]
+andromeda-bom = { module = "ir.farsroidx:andromeda-bom", version.ref = "andromeda-bom" }
 ```
 
-##### in `build.gradle.kts`:
+##### 3. in `build.gradle.kts`:
 ```kotlin
 dependencies {
-    implementation("com.github.farsroidx:andromeda-bom:🔝LATEST_VERSION🔝")
+
+    implementation(
+        platform(
+            libs.andromeda.bom
+        )
+    )
+
+    // others andromeda libraries
 }
 ```
 

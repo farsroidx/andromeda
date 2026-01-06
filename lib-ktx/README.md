@@ -1,12 +1,20 @@
-# Andromeda Ktx ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+# Andromeda KTX ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white) ![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red.svg?style=for-the-badge&logo=heart&logoColor=white)
 
 farsroidx pre-built codes for faster and easier Android app development.
 
-> ![GitHub repo size](https://img.shields.io/github/repo-size/farsroidx/andromeda-ktx)
+> 🪶 AAR Library Size: **~19KB**
 
-### Installation:
+### 📦 Andromeda Libraries
 
-##### in `settings.gradle.kts`:
+All **Andromeda libraries** are version-aligned and managed via a central **BOM** 🔒.  
+This ensures all subprojects use compatible versions automatically.
+
+🔗 **[View the Andromeda](../.)**  
+🔗 **[Check the BOM Module](../bom)**
+
+### Usage:
+
+##### 1. in `settings.gradle.kts`:
 ```kotlin
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
@@ -15,17 +23,32 @@ dependencyResolutionManagement {
         mavenLocal()
         mavenCentral()
         google()
-        maven(url = "https://jitpack.io") <------
     }
 }
 ```
 
-> ###### LATEST_VERSION: [![](https://jitpack.io/v/farsroidx/andromeda-ktx.svg)](https://jitpack.io/#farsroidx/andromeda-ktx)
+##### 2. in `libs.versions.toml`:
+[![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ktx)
+```toml
+[versions]
+andromeda-bom = "🔝LATEST_VERSION🔝"
 
-##### in `build.gradle.kts`:
+[libraries]
+andromeda-bom = { module = "ir.farsroidx:andromeda-bom", version.ref = "andromeda-bom" }
+andromeda-ktx = { module = "ir.farsroidx:andromeda-ktx"                                }
+```
+
+##### 3. in `build.gradle.kts`:
 ```kotlin
 dependencies {
-    implementation("com.github.farsroidx:andromeda-ktx:🔝LATEST_VERSION🔝")
+
+    implementation(
+        platform(
+            libs.andromeda.bom
+        )
+    )
+
+    implementation(libs.andromeda.ktx)
 }
 ```
 
