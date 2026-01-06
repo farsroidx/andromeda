@@ -11,4 +11,7 @@ package ir.farsroidx.andromeda.foundation.time
  * @property value The numeric value of the time duration.
  * @property unit The unit of the time duration (e.g., seconds, minutes).
  */
-data class AndromedaTime(val value: Int, val unit: AndromedaTimeUnit)
+data class AndromedaTime(
+    val value: Int,
+    val unit: AndromedaTimeUnit,
+)

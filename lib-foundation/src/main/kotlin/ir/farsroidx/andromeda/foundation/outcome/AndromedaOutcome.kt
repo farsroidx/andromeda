@@ -36,21 +36,24 @@ import kotlin.contracts.ExperimentalContracts
  *
  * @param T The type returned when the operation succeeds.
  */
-sealed interface AndromedaOutcome <out T> {
-
+sealed interface AndromedaOutcome<out T> {
     /**
      * Represents a successful operation.
      *
      * @param data The value produced by the operation.
      */
-    data class Success<out T>(val data: T) : AndromedaOutcome<T>
+    data class Success<out T>(
+        val data: T,
+    ) : AndromedaOutcome<T>
 
     /**
      * Represents a failed operation.
      *
      * Contains an [AndromedaOutcomeError] describing the reason for failure.
      */
-    data class Failure(val error: AndromedaOutcomeError) : AndromedaOutcome<Nothing>
+    data class Failure(
+        val error: AndromedaOutcomeError,
+    ) : AndromedaOutcome<Nothing>
 
     /**
      * Returns the success value if present, otherwise `null`.

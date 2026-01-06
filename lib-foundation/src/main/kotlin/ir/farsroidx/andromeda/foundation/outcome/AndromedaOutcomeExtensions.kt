@@ -58,11 +58,10 @@ suspend fun <T> AndromedaOutcome<T>.onSuccess(callback: suspend (T) -> Unit): An
  *
  * @return The original [AndromedaOutcome] instance for fluent chaining.
  */
-suspend fun <T> AndromedaOutcome<T>.onFailure(
-    callback: suspend (AndromedaOutcomeError) -> Unit
-): AndromedaOutcome<T> = also {
-    if (this is AndromedaOutcome.Failure) callback(this.error)
-}
+suspend fun <T> AndromedaOutcome<T>.onFailure(callback: suspend (AndromedaOutcomeError) -> Unit): AndromedaOutcome<T> =
+    also {
+        if (this is AndromedaOutcome.Failure) callback(this.error)
+    }
 
 /**
  * Converts a [Throwable] into a structured [AndromedaOutcomeException].
@@ -84,7 +83,8 @@ suspend fun <T> AndromedaOutcome<T>.onFailure(
  */
 fun Throwable.toAndromedaOutcomeException(): AndromedaOutcomeException =
     AndromedaOutcomeException.Throwable(throwable = this).also {
-        Log.e("Andromeda",
+        Log.e(
+            "Andromeda",
             """
             ==================== AndromedaOutcomeException =====================
             code      : ${it.code}
@@ -94,6 +94,6 @@ fun Throwable.toAndromedaOutcomeException(): AndromedaOutcomeException =
             stack     :
             ${it.stack}
             =====================================================================
-            """.trimIndent()
+            """.trimIndent(),
         )
     }

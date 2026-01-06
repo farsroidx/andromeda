@@ -42,7 +42,6 @@ package ir.farsroidx.andromeda.foundation.outcome
  * ```
  */
 interface AndromedaOutcomeError {
-
     /**
      * A human-readable description of the error.
      *

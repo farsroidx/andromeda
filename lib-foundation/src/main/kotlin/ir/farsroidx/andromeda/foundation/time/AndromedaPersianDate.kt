@@ -26,7 +26,6 @@ package ir.farsroidx.andromeda.foundation.time
  * and suitable for Android, JVM, and multiplatform use cases.
  */
 object AndromedaPersianDate {
-
     /** Iran Standard Time offset (UTC +03:30) in milliseconds. */
     private const val IRAN_OFFSET_STD = 12600000L // UTC +3:30
 
@@ -72,19 +71,18 @@ object AndromedaPersianDate {
      * @return corresponding Jalali date-time
      */
     fun fromTimestamp(timestamp: Long): PersianDateTimeModel {
-
         val isDst = isIranDaylightSaving(timestamp)
 
         val offset = if (isDst) IRAN_OFFSET_DST else IRAN_OFFSET_STD
 
         val localMillis = timestamp + offset
 
-        val totalSeconds   = localMillis / 1000L
-        val seconds        = (totalSeconds % 60).toInt()
-        val totalMinutes   = totalSeconds / 60
-        val minutes        = (totalMinutes % 60).toInt()
-        val totalHours     = totalMinutes / 60
-        val hours          = (totalHours % 24).toInt()
+        val totalSeconds = localMillis / 1000L
+        val seconds = (totalSeconds % 60).toInt()
+        val totalMinutes = totalSeconds / 60
+        val minutes = (totalMinutes % 60).toInt()
+        val totalHours = totalMinutes / 60
+        val hours = (totalHours % 24).toInt()
         val daysSinceEpoch = totalHours / 24
 
         // Julian Day Number for 1970-01-01 is 2440587
@@ -104,16 +102,15 @@ object AndromedaPersianDate {
      * @return Unix timestamp in milliseconds (UTC)
      */
     fun toTimestamp(dt: PersianDateTimeModel): Long {
-
         val jdn = calculateJdnFromJalali(dt.year, dt.month, dt.day)
 
         val daysSinceEpoch = jdn - 2440588
 
-        val timeMillis     = (dt.hour * 3600L + dt.minute * 60L + dt.second) * 1000L
+        val timeMillis = (dt.hour * 3600L + dt.minute * 60L + dt.second) * 1000L
         val localTimestamp = (daysSinceEpoch * MILLIS_IN_DAY) + timeMillis
 
         // Determine offset by checking DST for the calculated local time
-        val isDst  = isIranDaylightSaving(localTimestamp - IRAN_OFFSET_STD)
+        val isDst = isIranDaylightSaving(localTimestamp - IRAN_OFFSET_STD)
         val offset = if (isDst) IRAN_OFFSET_DST else IRAN_OFFSET_STD
 
         return localTimestamp - offset
@@ -129,15 +126,17 @@ object AndromedaPersianDate {
      * @param pattern formatting pattern
      * @return formatted date-time string
      */
-    fun format(dt: PersianDateTimeModel, pattern: String): String {
-        return pattern
+    fun format(
+        dt: PersianDateTimeModel,
+        pattern: String,
+    ): String =
+        pattern
             .replace("yyyy", "%04d".format(dt.year))
             .replace("MM", "%02d".format(dt.month))
             .replace("dd", "%02d".format(dt.day))
             .replace("HH", "%02d".format(dt.hour))
             .replace("mm", "%02d".format(dt.minute))
             .replace("ss", "%02d".format(dt.second))
-    }
 
     /**
      * Determines whether a given timestamp falls under Iran daylight saving time.
@@ -150,7 +149,6 @@ object AndromedaPersianDate {
      * @return `true` if DST is active, otherwise `false`
      */
     private fun isIranDaylightSaving(timestamp: Long): Boolean {
-
         val approxJdn = (timestamp + IRAN_OFFSET_STD) / MILLIS_IN_DAY + 2440588
 
         val date = calculateJalaliFromJdn(approxJdn, 0, 0, 0)
@@ -176,51 +174,64 @@ object AndromedaPersianDate {
      * @param s second
      * @return Jalali date-time model
      */
-    private fun calculateJalaliFromJdn(jdn: Long, h: Int, m: Int, s: Int): PersianDateTimeModel {
-
+    private fun calculateJalaliFromJdn(
+        jdn: Long,
+        h: Int,
+        m: Int,
+        s: Int,
+    ): PersianDateTimeModel {
         val dEpoch = jdn - 2121446L
-        val cycle  = dEpoch / 1029983L
-        val cYear  = dEpoch % 1029983L
+        val cycle = dEpoch / 1029983L
+        val cYear = dEpoch % 1029983L
 
-        val yCycle = if (cYear == 1029982L) { 2820L } else {
-            val aux1 = cYear / 366L
-            val aux2 = cYear % 366L
-            ((2134L * aux1 + 2816L * aux2 + 2815L) / 1028522L) + aux1 + 1
-        }
+        val yCycle =
+            if (cYear == 1029982L) {
+                2820L
+            } else {
+                val aux1 = cYear / 366L
+                val aux2 = cYear % 366L
+                ((2134L * aux1 + 2816L * aux2 + 2815L) / 1028522L) + aux1 + 1
+            }
 
         val jy = yCycle + 2820L * cycle + 474L
         val year = if (jy > 0) jy else jy - 1
 
         val yDay = jdn - calculateJdnFromJalali(year.toInt(), 1, 1) + 1
 
-        val month = if (yDay <= 186) {
-            ((yDay - 1) / 31 + 1).toInt()
-        } else {
-            ((yDay - 187) / 30 + 7).toInt()
-        }
+        val month =
+            if (yDay <= 186) {
+                ((yDay - 1) / 31 + 1).toInt()
+            } else {
+                ((yDay - 187) / 30 + 7).toInt()
+            }
 
-        val day = if (yDay <= 186) {
-            ((yDay - 1) % 31 + 1).toInt()
-        } else {
-            ((yDay - 187) % 30 + 1).toInt()
-        }
+        val day =
+            if (yDay <= 186) {
+                ((yDay - 1) % 31 + 1).toInt()
+            } else {
+                ((yDay - 187) % 30 + 1).toInt()
+            }
 
         return PersianDateTimeModel(
-            year   = year.toInt(),
-            month  = month,
-            day    = day,
-            hour   = h,
+            year = year.toInt(),
+            month = month,
+            day = day,
+            hour = h,
             minute = m,
-            second = s
+            second = s,
         )
     }
 
-    private fun calculateJalaliFromJdn2(jdn: Long, h: Int, m: Int, s: Int): PersianDateTimeModel {
-
-        val dep   = jdn - 2121445L
+    private fun calculateJalaliFromJdn2(
+        jdn: Long,
+        h: Int,
+        m: Int,
+        s: Int,
+    ): PersianDateTimeModel {
+        val dep = jdn - 2121445L
         val cycle = dep / 12053L
-        var d1    = dep % 12053L
-        var jy    = 979L + 33L * cycle + 4L * (d1 / 1461L)
+        var d1 = dep % 12053L
+        var jy = 979L + 33L * cycle + 4L * (d1 / 1461L)
 
         d1 %= 1461L
 
@@ -233,7 +244,12 @@ object AndromedaPersianDate {
         val jd = if (d1 < 186L) 1 + (d1 % 31L).toInt() else 1 + ((d1 - 186L) % 30L).toInt()
 
         return PersianDateTimeModel(
-            year = jy.toInt(), month = jm, day = jd, hour = h, minute = m, second = s
+            year = jy.toInt(),
+            month = jm,
+            day = jd,
+            hour = h,
+            minute = m,
+            second = s,
         )
     }
 
@@ -245,16 +261,20 @@ object AndromedaPersianDate {
      * @param jd Jalali day
      * @return Julian Day Number
      */
-    private fun calculateJdnFromJalali(jy: Int, jm: Int, jd: Int): Long {
-
+    private fun calculateJdnFromJalali(
+        jy: Int,
+        jm: Int,
+        jd: Int,
+    ): Long {
         val epBase = jy - if (jy >= 0) 474 else 473
         val epYear = 474 + (epBase % 2820)
 
-        val monthDays = if (jm <= 7) {
-            (jm - 1) * 31
-        } else {
-            (jm - 1) * 30 + 6
-        }
+        val monthDays =
+            if (jm <= 7) {
+                (jm - 1) * 31
+            } else {
+                (jm - 1) * 30 + 6
+            }
 
         return jd +
             monthDays +
@@ -275,11 +295,11 @@ object AndromedaPersianDate {
      * @property second Second (0-59)
      */
     data class PersianDateTimeModel(
-        val year   : Int,
-        val month  : Int,
-        val day    : Int,
-        val hour   : Int = 0,
-        val minute : Int = 0,
-        val second : Int = 0
+        val year: Int,
+        val month: Int,
+        val day: Int,
+        val hour: Int = 0,
+        val minute: Int = 0,
+        val second: Int = 0,
     )
 }

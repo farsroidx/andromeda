@@ -24,8 +24,9 @@ package ir.farsroidx.andromeda.foundation.time
  *
  * @property millis Duration of the time unit in milliseconds.
  */
-sealed class AndromedaTimeUnit(val millis: Long) {
-
+sealed class AndromedaTimeUnit(
+    val millis: Long,
+) {
     /**
      * Time unit representing seconds.
      *

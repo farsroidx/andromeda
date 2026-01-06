@@ -23,7 +23,6 @@ import kotlin.Throwable as KotlinThrowable
  * Extend this class to create meaningful, traceable domain-specific errors.
  */
 sealed class AndromedaOutcomeException : AndromedaOutcomeError {
-
     /**
      * Human-readable description of the error.
      */
@@ -49,13 +48,14 @@ sealed class AndromedaOutcomeException : AndromedaOutcomeError {
      */
     val stack: String = captureStackTrace()
 
-    override fun toString(): String =
-        "AndromedaOutcomeException(errorId=$errorId, message=$message, code=$code, timestamp=$timestamp)"
+    override fun toString(): String = "AndromedaOutcomeException(errorId=$errorId, message=$message, code=$code, timestamp=$timestamp)"
 
     /**
      * Represents a general unexpected error when no specific subtype applies.
      */
-    data class Unexpected(override val message: String) : AndromedaOutcomeException() {
+    data class Unexpected(
+        override val message: String,
+    ) : AndromedaOutcomeException() {
         override val code: Int = -1
     }
 
@@ -84,5 +84,4 @@ private fun generateErrorId(): String {
 /**
  * Captures the current thread's stack trace as a formatted string for debugging.
  */
-private fun captureStackTrace(): String =
-    Thread.currentThread().stackTrace.joinToString("\n")
+private fun captureStackTrace(): String = Thread.currentThread().stackTrace.joinToString("\n")

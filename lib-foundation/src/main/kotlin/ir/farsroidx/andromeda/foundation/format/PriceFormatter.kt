@@ -7,7 +7,6 @@ import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 object PriceFormatter {
-
     private val cache = mutableMapOf<String, DecimalFormat>()
 
     fun format(
@@ -16,27 +15,28 @@ object PriceFormatter {
         decimalSeparator: Char = '.',
         decimalPlaces: Int = 0,
         prefix: String = "",
-        suffix: String = ""
+        suffix: String = "",
     ): String {
-
         val number = parseToDouble(value)
 
         val pattern = buildDecimalPattern(decimalPlaces)
-        val cacheKey = "${thousandSeparator}_${decimalSeparator}_${decimalPlaces}"
+        val cacheKey = "${thousandSeparator}_${decimalSeparator}_$decimalPlaces"
 
-        val formatter = cache.getOrPut(cacheKey) {
-            DecimalFormat(
-                pattern, DecimalFormatSymbols(Locale.getDefault()).apply {
-                    groupingSeparator = thousandSeparator
-                    this.decimalSeparator = decimalSeparator
-                    monetaryDecimalSeparator = decimalSeparator
+        val formatter =
+            cache.getOrPut(cacheKey) {
+                DecimalFormat(
+                    pattern,
+                    DecimalFormatSymbols(Locale.getDefault()).apply {
+                        groupingSeparator = thousandSeparator
+                        this.decimalSeparator = decimalSeparator
+                        monetaryDecimalSeparator = decimalSeparator
+                    },
+                ).apply {
+                    isGroupingUsed = true
+                    maximumFractionDigits = decimalPlaces
+                    minimumFractionDigits = decimalPlaces
                 }
-            ).apply {
-                isGroupingUsed        = true
-                maximumFractionDigits = decimalPlaces
-                minimumFractionDigits = decimalPlaces
             }
-        }
 
         return try {
             "$prefix${formatter.format(number)}$suffix"
@@ -48,15 +48,15 @@ object PriceFormatter {
     fun parse(
         formattedValue: String?,
         thousandSeparator: Char = ',',
-        decimalSeparator: Char = '.'
+        decimalSeparator: Char = '.',
     ): Double {
-
         if (formattedValue.isNullOrBlank()) return 0.0
 
-        val cleanString = formattedValue
-            .replace(thousandSeparator.toString(), "")
-            .replace(decimalSeparator.toString(), ".")
-            .replace("[^\\d.-]".toRegex(), "")
+        val cleanString =
+            formattedValue
+                .replace(thousandSeparator.toString(), "")
+                .replace(decimalSeparator.toString(), ".")
+                .replace("[^\\d.-]".toRegex(), "")
 
         return cleanString.toDoubleOrNull() ?: 0.0
     }
@@ -64,9 +64,8 @@ object PriceFormatter {
     fun removeFormatting(
         formattedValue: String?,
         thousandSeparator: Char = ',',
-        decimalSeparator: Char = '.'
+        decimalSeparator: Char = '.',
     ): String {
-
         if (formattedValue.isNullOrBlank()) return "0"
 
         return formattedValue
@@ -77,7 +76,6 @@ object PriceFormatter {
     }
 
     fun cleanNumberString(input: String?): String {
-
         if (input.isNullOrBlank()) return "0"
 
         return input
@@ -88,22 +86,20 @@ object PriceFormatter {
             .ifBlank { "0" }
     }
 
-    private fun parseToDouble(value: Any?): Double {
-        return when (value) {
+    private fun parseToDouble(value: Any?): Double =
+        when (value) {
             null -> 0.0
             is Number -> value.toDouble()
             is String -> value.toDoubleOrNull() ?: 0.0
             else -> 0.0
         }
-    }
 
-    private fun buildDecimalPattern(decimalPlaces: Int): String {
-        return buildString {
+    private fun buildDecimalPattern(decimalPlaces: Int): String =
+        buildString {
             append("#,##0")
             if (decimalPlaces > 0) {
                 append(".")
                 repeat(decimalPlaces) { append("0") }
             }
         }
-    }
 }
