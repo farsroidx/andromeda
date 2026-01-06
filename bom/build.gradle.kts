@@ -49,7 +49,7 @@ afterEvaluate {
 
                 from(components["javaPlatform"])
 
-                addPom(Module.BOM, group = group.toString(), version = version.toString())
+                pomOptions(Module.BOM, group.toString(), version.toString())
             }
         }
     }
