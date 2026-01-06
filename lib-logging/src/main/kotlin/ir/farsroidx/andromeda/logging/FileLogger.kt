@@ -8,14 +8,14 @@ import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 // @formatter:off // TODO: Do not remove this line to preserve the code style ----------------------
 
 object FileLogger : AndromedaLogger {
-
     private var isLoggingEnabled: Boolean = true
 
     private var defaultTag: String = "Andromeda"
@@ -29,11 +29,10 @@ object FileLogger : AndromedaLogger {
     fun install(
         context: Context,
         isEnabled: Boolean = true,
-        defaultTag: String = "Andromeda"
+        defaultTag: String = "Andromeda",
     ) {
-
         this.isLoggingEnabled = isEnabled
-        this.defaultTag       = defaultTag
+        this.defaultTag = defaultTag
 
         val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.US)
 
@@ -46,8 +45,12 @@ object FileLogger : AndromedaLogger {
         if (logFile?.exists() == false) logFile?.createNewFile()
     }
 
-    override fun log(level: AndromedaLogLevel, value: Any?, tag: String?, throwable: Throwable?) {
-
+    override fun log(
+        level: AndromedaLogLevel,
+        value: Any?,
+        tag: String?,
+        throwable: Throwable?,
+    ) {
         if (!isLoggingEnabled || logFile == null) return
 
         val logTag = tag ?: defaultTag
@@ -59,11 +62,9 @@ object FileLogger : AndromedaLogger {
         val fullMessage = "$timestamp [$level] $logTag: $message"
 
         lock.withLock {
-
             Logger.log(level, message, logTag, throwable)
 
             try {
-
                 FileWriter(logFile, true).use { writer ->
 
                     writer.appendLine(fullMessage)
@@ -71,10 +72,8 @@ object FileLogger : AndromedaLogger {
                     throwable?.let { t ->
 
                         writer.appendLine(Log.getStackTraceString(t))
-
                     }
                 }
-
             } catch (e: IOException) {
                 Logger.e("AndromedaFileLogger", "Failed to write log to file", e)
             }

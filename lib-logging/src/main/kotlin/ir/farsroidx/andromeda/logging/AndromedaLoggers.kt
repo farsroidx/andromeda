@@ -8,7 +8,6 @@ import android.os.SystemClock
  * Logs the current memory usage of the application.
  */
 fun printMemoryUsage() {
-
     val runtime = Runtime.getRuntime()
 
     val usedMemory = (runtime.totalMemory() - runtime.freeMemory()) / (1024 * 1024)
