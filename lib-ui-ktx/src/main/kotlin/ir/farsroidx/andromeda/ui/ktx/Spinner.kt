@@ -10,14 +10,19 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 
 fun Spinner.setSpinnerAdapter(
-    @LayoutRes layoutId: Int, values: List<String>? = null, placeholder: String? = null
+    @LayoutRes layoutId: Int,
+    values: List<String>? = null,
+    placeholder: String? = null,
 ) {
-    this.adapter = ArrayAdapter(
-        context, layoutId, mutableListOf<String>().apply {
-            placeholder?.let { add(it) }
-            values?.let { addAll(it) }
-        }
-    )
+    this.adapter =
+        ArrayAdapter(
+            context,
+            layoutId,
+            mutableListOf<String>().apply {
+                placeholder?.let { add(it) }
+                values?.let { addAll(it) }
+            },
+        )
     this.setSelection(0)
 }
 
@@ -25,17 +30,21 @@ fun Spinner.addOnItemSelectedListener(
     onNothingSelected: (parent: AdapterView<*>) -> Unit = {},
     onItemSelected: (parent: AdapterView<*>, view: View, position: Int, id: Long) -> Unit = { _, _, _, _ -> },
 ) {
+    this.onItemSelectedListener =
+        object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View,
+                position: Int,
+                id: Long,
+            ) {
+                onItemSelected(parent, view, position, id)
+            }
 
-    this.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-
-        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-            onItemSelected(parent, view, position, id)
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                onNothingSelected(parent)
+            }
         }
-
-        override fun onNothingSelected(parent: AdapterView<*>) {
-            onNothingSelected(parent)
-        }
-    }
 }
 
 /**
@@ -49,6 +58,4 @@ fun Spinner.addOnItemSelectedListener(
  * `TextView`, and then returns its text value. If the index is invalid (less than 0), an
  * empty string is returned to prevent errors.
  */
-fun Spinner.getValueFrom(index: Int): String {
-    return if (index < 0) "" else (this.getChildAt(index) as TextView).text.toString()
-}
+fun Spinner.getValueFrom(index: Int): String = if (index < 0) "" else (this.getChildAt(index) as TextView).text.toString()

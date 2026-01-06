@@ -13,4 +13,3 @@ fun View.removeClickListener() = this.setOnClickListener(null)
  * Removes the long click listener from the view by setting it to null.
  */
 fun View.removeLongClickListener() = this.setOnLongClickListener(null)
-

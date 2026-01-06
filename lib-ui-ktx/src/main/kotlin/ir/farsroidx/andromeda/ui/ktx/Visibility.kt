@@ -7,17 +7,23 @@ import android.view.View
 /**
  * Sets the visibility of the view to visible (View.VISIBLE).
  */
-fun View.visible() { this.visibility = View.VISIBLE }
+fun View.visible() {
+    this.visibility = View.VISIBLE
+}
 
 /**
  * Sets the visibility of the view to invisible (View.INVISIBLE).
  */
-fun View.invisible() { this.visibility = View.INVISIBLE }
+fun View.invisible() {
+    this.visibility = View.INVISIBLE
+}
 
 /**
  * Sets the visibility of the view to gone (View.GONE).
  */
-fun View.gone() { this.visibility = View.GONE }
+fun View.gone() {
+    this.visibility = View.GONE
+}
 
 /**
  * Sets the visibility of the view to either visible or invisible based on the boolean flag `isVisible`.

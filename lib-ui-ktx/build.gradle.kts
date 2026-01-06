@@ -13,14 +13,14 @@ version = "1.0.0"
 
 android {
 
-    namespace  = "ir.farsroidx.andromeda.ui.ktx"
+    namespace = "ir.farsroidx.andromeda.ui.ktx"
 
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        minSdk                    = 23
+        minSdk = 23
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -39,7 +39,8 @@ android {
         compilerOptions {
 
             freeCompilerArgs.addAll(
-                "-Xcontext-parameters", "-Xannotation-default-target=param-property"
+                "-Xcontext-parameters",
+                "-Xannotation-default-target=param-property",
             )
         }
     }
@@ -66,7 +67,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
 }
 
 afterEvaluate {
@@ -77,9 +77,9 @@ afterEvaluate {
 
             register<MavenPublication>("release") {
 
-                from( components["release"] )
+                from(components["release"])
 
-                addPom(Module.UI_KTX, group = group.toString(), version = version.toString())
+                pomOptions(Module.UI_KTX, group.toString(), version.toString())
             }
         }
     }
