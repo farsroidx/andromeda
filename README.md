@@ -1,14 +1,21 @@
-# Andromeda ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+# Andromeda ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white) ![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red.svg?style=for-the-badge&logo=heart&logoColor=white)
 
-![GitHub repo size](https://img.shields.io/github/repo-size/farsroidx/andromeda)
-![GitHub last commit](https://img.shields.io/github/last-commit/farsroidx/andromeda)
-![JitPack](https://img.shields.io/jitpack/v/github/farsroidx/andromeda)
-![Maven Central](https://img.shields.io/maven-central/v/com.github.farsroidx/andromeda-bom)
-![License](https://img.shields.io/github/license/farsroidx/andromeda)
+[![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-bom.svg)](https://central.sonatype.com/search?q=g:ir.farsroidx&smo=true)
+[![License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.21-7F52FF.svg?logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/4c0aaa44a2124bafa2666a06d7799f46)](https://app.codacy.com/gh/farsroidx/andromeda/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+![Min SDK](https://img.shields.io/badge/minSdk-23%2B-orange.svg?style=flat)
+[![ktlint](https://img.shields.io/badge/code%20style-ktlint-7F52FF.svg?logo=kotlin&logoColor=white)](https://ktlint.github.io/)
+![Last Commit](https://img.shields.io/github/last-commit/farsroidx/andromeda)
 
 **Andromeda** is a modern, modular Android architecture toolkit designed to help you build scalable, maintainable, and production-ready Android applications.
 
 This repository serves as the **parent project** for the Andromeda ecosystem and contains multiple independent modules that can be used together or individually.
+
+---
+
+### 🪶 Total Binary Size: **~150KB**
+> Includes all published **AAR | JAR** artifacts (latest version, whitout signutures).
 
 ---
 
@@ -25,10 +32,16 @@ This repository serves as the **parent project** for the Andromeda ecosystem and
 
 Andromeda is composed of multiple standalone modules, including but not limited to:
 
-- `andromeda-foundation`
-- `andromeda-core`
-- `andromeda-logger`
-- `andromeda-viewmodel`
+| Feature | Unavailable | In Development | Stable |                                                                                 Latest Version                                                                                 |
+|:--------|:-----------:|:--------------:|:------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| andromeda-bom                                  |—|—|—|            [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-bom.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-bom)            |
+| [andromeda-foundation](lib-foundation)         | |✔|✔|     [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-foundation.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-foundation)     |
+| [andromeda-foundation-ktx](lib-foundation-ktx) | |✔|✔| [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-foundation-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-foundation-ktx) |
+| [andromeda-ktx](lib-ktx)                       | |✔|✔|            [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ktx)            |
+| [andromeda-logging](lib-logging)               | |✔|✔|        [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-logging.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-logging)        |
+| [andromeda-ui](lib-ui)                         | |✔|✔|             [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ui.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ui)             |
+| [andromeda-ui-ktx](lib-ui-ktx)                 | |✔|✔|         [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ui-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ui-ktx)         |
+| [andromeda-viewmodel](lib-viewmodel)           | | |✔|       [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-viewmodel.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-viewmodel)       |
 
 Each module is versioned and published as an independent artifact, while remaining fully compatible through the Andromeda BOM.
 
@@ -38,10 +51,69 @@ Each module is versioned and published as an independent artifact, while remaini
 
 Andromeda provides a **Bill of Materials (BOM)** to ensure all modules work seamlessly together.
 
+##### 1. in `settings.gradle.kts`:
 ```kotlin
-implementation(platform("com.github.farsroidx:andromeda-bom:<version>"))
+@Suppress("UnstableApiUsage")
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+    }
+}
+```
 
-implementation("com.github.farsroidx:andromeda-foundation")
-implementation("com.github.farsroidx:andromeda-core")
-implementation("com.github.farsroidx:andromeda-logger")
-implementation("com.github.farsroidx:andromeda-viewmodel")
+##### 2. in `libs.versions.toml`:
+[![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-bom.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-bom)
+```toml
+[versions]
+andromeda-bom = "🔝LATEST_VERSION🔝"
+
+[libraries]
+andromeda-bom            = { module = "ir.farsroidx:andromeda-bom", version.ref = "andromeda-bom" }
+andromeda-foundation     = { module = "ir.farsroidx:andromeda-foundation"                         }
+andromeda-foundation-ktx = { module = "ir.farsroidx:andromeda-foundation-ktx"                     }
+andromeda-ktx            = { module = "ir.farsroidx:andromeda-ktx"                                }
+andromeda-logging        = { module = "ir.farsroidx:andromeda-logging"                            }
+andromeda-ui             = { module = "ir.farsroidx:andromeda-ui"                                 }
+andromeda-ui-ktx         = { module = "ir.farsroidx:andromeda-ui-ktx"                             }
+andromeda-viewmodel      = { module = "ir.farsroidx:andromeda-viewmodel"                          }
+
+[bundles]
+andromeda = [
+    "andromeda-foundation",
+    "andromeda-foundation-ktx",
+    "andromeda-ktx",
+    "andromeda-logging",
+    "andromeda-ui",
+    "andromeda-ui-ktx",
+    "andromeda-viewmodel"
+]
+```
+
+##### 3. in `build.gradle.kts`:
+```kotlin
+dependencies {
+
+    implementation(
+        platform(
+            libs.andromeda.bom
+        )
+    )
+
+    // with bundle:
+    implementation(libs.bundles.andromeda)
+
+    // without bundle:
+    implementation(libs.andromeda.foundation)
+    implementation(libs.andromeda.foundation.ktx)
+    implementation(libs.andromeda.ktx)
+    implementation(libs.andromeda.logging)
+    implementation(libs.andromeda.ui)
+    implementation(libs.andromeda.ui.ktx)
+    implementation(libs.andromeda.viewmodel)
+}
+```
+
+[![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](https://github.com/farsroidx)
