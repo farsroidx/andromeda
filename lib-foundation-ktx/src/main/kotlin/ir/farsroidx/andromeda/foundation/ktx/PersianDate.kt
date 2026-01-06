@@ -15,8 +15,7 @@ import ir.farsroidx.andromeda.foundation.time.AndromedaPersianDate.PersianDateTi
  * val now = getPersianDateTime()
  * ```
  */
-fun getPersianDateTime(pattern: String = "yyyy/MM/dd"): String =
-    AndromedaPersianDate.now(pattern)
+fun getPersianDateTime(pattern: String = "yyyy/MM/dd"): String = AndromedaPersianDate.now(pattern)
 
 /**
  * Converts this Unix timestamp to a formatted Jalali (Persian) date string.
@@ -75,9 +74,7 @@ fun Long.toPersianDateTime(pattern: String = "yyyy/MM/dd HH:mm:ss"): String {
  *
  * @receiver Unix timestamp in milliseconds (UTC)
  */
-fun Long.toPersianDateTimeModel(): PersianDateTimeModel {
-    return AndromedaPersianDate.fromTimestamp(this)
-}
+fun Long.toPersianDateTimeModel(): PersianDateTimeModel = AndromedaPersianDate.fromTimestamp(this)
 
 /**
  * Converts this Jalali date-time model into a Unix timestamp (UTC).
@@ -89,33 +86,27 @@ fun Long.toPersianDateTimeModel(): PersianDateTimeModel {
  *
  * @return Unix timestamp in milliseconds (UTC)
  */
-fun PersianDateTimeModel.toTimestamp(): Long {
-    return AndromedaPersianDate.toTimestamp(this)
-}
+fun PersianDateTimeModel.toTimestamp(): Long = AndromedaPersianDate.toTimestamp(this)
 
 /**
  * Creates a copy of this Jalali date with time set to 00:00:00.
  */
-fun PersianDateTimeModel.atStartOfDay(): PersianDateTimeModel =
-    copy(hour = 0, minute = 0, second = 0)
+fun PersianDateTimeModel.atStartOfDay(): PersianDateTimeModel = copy(hour = 0, minute = 0, second = 0)
 
 /**
  * Creates a copy of this Jalali date with time set to 23:59:59.
  */
-fun PersianDateTimeModel.atEndOfDay(): PersianDateTimeModel =
-    copy(hour = 23, minute = 59, second = 59)
+fun PersianDateTimeModel.atEndOfDay(): PersianDateTimeModel = copy(hour = 23, minute = 59, second = 59)
 
 /**
  * Checks whether this Jalali date-time occurs before [other].
  */
-fun PersianDateTimeModel.isBefore(other: PersianDateTimeModel): Boolean =
-    this.toTimestamp() < other.toTimestamp()
+fun PersianDateTimeModel.isBefore(other: PersianDateTimeModel): Boolean = this.toTimestamp() < other.toTimestamp()
 
 /**
  * Checks whether this Jalali date-time occurs after [other].
  */
-fun PersianDateTimeModel.isAfter(other: PersianDateTimeModel): Boolean =
-    this.toTimestamp() > other.toTimestamp()
+fun PersianDateTimeModel.isAfter(other: PersianDateTimeModel): Boolean = this.toTimestamp() > other.toTimestamp()
 
 /**
  * Returns a new Jalali date by adding the given number of days to this date.
@@ -157,8 +148,7 @@ operator fun PersianDateTimeModel.minus(days: Int): PersianDateTimeModel {
  * val dueDate = today addDays 10
  * ```
  */
-infix fun PersianDateTimeModel.addDays(days: Int): PersianDateTimeModel =
-    this + days
+infix fun PersianDateTimeModel.addDays(days: Int): PersianDateTimeModel = this + days
 
 /**
  * Returns a new Jalali date after subtracting [days] days from this date.
@@ -168,8 +158,7 @@ infix fun PersianDateTimeModel.addDays(days: Int): PersianDateTimeModel =
  * val startDate = today minusDays 3
  * ```
  */
-infix fun PersianDateTimeModel.minusDays(days: Int): PersianDateTimeModel =
-    this - days
+infix fun PersianDateTimeModel.minusDays(days: Int): PersianDateTimeModel = this - days
 
 /**
  * Calculates the number of days from this Jalali date until [other].
@@ -188,6 +177,6 @@ infix fun PersianDateTimeModel.minusDays(days: Int): PersianDateTimeModel =
  */
 infix fun PersianDateTimeModel.daysUntil(other: PersianDateTimeModel): Long {
     val start = this.atStartOfDay().toTimestamp()
-    val end   = other.atStartOfDay().toTimestamp()
+    val end = other.atStartOfDay().toTimestamp()
     return (end - start) / 86_400_000L
 }
