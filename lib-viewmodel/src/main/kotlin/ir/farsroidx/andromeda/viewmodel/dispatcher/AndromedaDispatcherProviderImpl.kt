@@ -14,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
  * (e.g. `kotlinx.coroutines.test.StandardTestDispatcher`).
  */
 object AndromedaDispatcherProviderImpl : AndromedaDispatcherProvider {
-
     /** Uses [Dispatchers.IO] for I/O-bound operations. */
     override val io: CoroutineDispatcher = Dispatchers.IO
 

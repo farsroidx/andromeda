@@ -57,10 +57,9 @@ import ir.farsroidx.andromeda.viewmodel.contract.AndromedaUiState as UiState
  *
  * @param dispatcherProvider Provides coroutine dispatchers for threading control.
  */
-abstract class AndromedaMviViewModel <S: UiState, I: UiIntent, A: UiAction, E: UiEffect> (
-    dispatcherProvider: AndromedaDispatcherProvider = AndromedaDispatcherProviderImpl
+abstract class AndromedaMviViewModel<S : UiState, I : UiIntent, A : UiAction, E : UiEffect>(
+    dispatcherProvider: AndromedaDispatcherProvider = AndromedaDispatcherProviderImpl,
 ) : AndromedaViewModel(dispatcherProvider) {
-
     // ---------------------------------------------------------------------------------------------
     // State
     // ---------------------------------------------------------------------------------------------
@@ -103,7 +102,6 @@ abstract class AndromedaMviViewModel <S: UiState, I: UiIntent, A: UiAction, E: U
      * ```
      */
     protected suspend fun updateState(block: S.() -> S) {
-
         val newState = defaultContext { _uiState.value.block() }
 
         mainContext { _uiState.value = newState }
@@ -132,18 +130,23 @@ abstract class AndromedaMviViewModel <S: UiState, I: UiIntent, A: UiAction, E: U
      *
      * Intents represent **what the user wants**, not what the system does.
      */
-    private val _intents: MutableSharedFlow<I> = MutableSharedFlow(
-        replay = 0, extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    private val intents: MutableSharedFlow<I> =
+        MutableSharedFlow(
+            replay = 0,
+            extraBufferCapacity = 1,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST,
+        )
 
-    init { observeIntents() }
+    init {
+        observeIntents()
+    }
 
     /**
      * Observes incoming intents and delegates them to [onIntentReceived].
      */
     private fun observeIntents() {
         defaultLaunch {
-            _intents.collect(collector = ::onIntentReceived)
+            intents.collect(collector = ::onIntentReceived)
         }
     }
 
@@ -158,7 +161,7 @@ abstract class AndromedaMviViewModel <S: UiState, I: UiIntent, A: UiAction, E: U
      * ```
      */
     fun newIntent(block: () -> I) {
-        _intents.tryEmit(value = block.invoke())
+        intents.tryEmit(value = block.invoke())
     }
 
     /**
@@ -188,16 +191,18 @@ abstract class AndromedaMviViewModel <S: UiState, I: UiIntent, A: UiAction, E: U
      *
      * Actions represent **what actually happens** inside the ViewModel.
      */
-    private val _actions = Channel<A>(capacity = Channel.BUFFERED)
+    private val actions = Channel<A>(capacity = Channel.BUFFERED)
 
-    init { observeActions() }
+    init {
+        observeActions()
+    }
 
     /**
      * Observes actions and forwards them to [processActions].
      */
     private fun observeActions() {
         defaultLaunch {
-            _actions.consumeAsFlow().collect(collector = ::processActions)
+            actions.consumeAsFlow().collect(collector = ::processActions)
         }
     }
 
@@ -211,7 +216,7 @@ abstract class AndromedaMviViewModel <S: UiState, I: UiIntent, A: UiAction, E: U
      * ```
      */
     protected fun dispatch(block: () -> A) {
-        _actions.trySend(element = block.invoke())
+        actions.trySend(element = block.invoke())
     }
 
     /**
@@ -244,9 +249,12 @@ abstract class AndromedaMviViewModel <S: UiState, I: UiIntent, A: UiAction, E: U
      *
      * Effects must **never** be part of the UI state.
      */
-    private val _uiEffects: MutableSharedFlow<E> = MutableSharedFlow(
-        replay = 0, extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    private val _uiEffects: MutableSharedFlow<E> =
+        MutableSharedFlow(
+            replay = 0,
+            extraBufferCapacity = 1,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST,
+        )
 
     /**
      * Public immutable stream of UI effects.

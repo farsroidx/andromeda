@@ -2,8 +2,6 @@
 
 package ir.farsroidx.andromeda.viewmodel
 
-import ir.farsroidx.andromeda.viewmodel.contract.AndromedaViewEvent as ViewEvent
-import ir.farsroidx.andromeda.viewmodel.contract.AndromedaViewState as ViewState
 import ir.farsroidx.andromeda.viewmodel.dispatcher.AndromedaDispatcherProvider
 import ir.farsroidx.andromeda.viewmodel.dispatcher.AndromedaDispatcherProviderImpl
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,6 +10,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import ir.farsroidx.andromeda.viewmodel.contract.AndromedaViewEvent as ViewEvent
+import ir.farsroidx.andromeda.viewmodel.contract.AndromedaViewState as ViewState
 
 /**
  * Base ViewModel for MVVM architecture with reactive state and one-time events.
@@ -74,10 +74,9 @@ import kotlinx.coroutines.flow.asStateFlow
  * @property viewState The observable [StateFlow] representing the current UI state.
  * @property viewEvent The observable [SharedFlow] representing one-time events.
  */
-abstract class AndromedaMvvmViewModel <S: ViewState, E: ViewEvent> (
-    dispatcherProvider: AndromedaDispatcherProvider = AndromedaDispatcherProviderImpl
+abstract class AndromedaMvvmViewModel<S : ViewState, E : ViewEvent>(
+    dispatcherProvider: AndromedaDispatcherProvider = AndromedaDispatcherProviderImpl,
 ) : AndromedaViewModel(dispatcherProvider) {
-
     private val defaultState: S by lazy { getInitialState() }
 
     private val _viewState = MutableStateFlow(value = defaultState)
@@ -107,7 +106,6 @@ abstract class AndromedaMvvmViewModel <S: ViewState, E: ViewEvent> (
      * and returns the new state.
      */
     protected suspend fun updateState(block: S.() -> S) {
-
         val newState = defaultContext { _viewState.value.block() }
 
         mainContext { _viewState.value = newState }

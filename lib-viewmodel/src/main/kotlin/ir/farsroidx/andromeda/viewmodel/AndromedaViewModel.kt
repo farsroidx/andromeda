@@ -63,13 +63,12 @@ import kotlinx.coroutines.withContext
  * @property dispatcherProvider The provider for coroutine dispatchers. Defaults to [ir.farsroidx.andromeda.viewmodel.dispatcher.AndromedaDispatcherProviderImpl].
  */
 abstract class AndromedaViewModel(
-    val dispatcherProvider: AndromedaDispatcherProvider = AndromedaDispatcherProviderImpl
+    val dispatcherProvider: AndromedaDispatcherProvider = AndromedaDispatcherProviderImpl,
 ) : ViewModel() {
-
-
-    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        onUnhandledException(throwable)
-    }
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            onUnhandledException(throwable)
+        }
 
     /**
      * Handles uncaught exceptions thrown in any coroutine launched with this ViewModel.
@@ -81,7 +80,6 @@ abstract class AndromedaViewModel(
      */
     @CallSuper
     protected open fun onUnhandledException(throwable: Throwable) {
-
         // Default behavior: Log the exception to a crash reporting service or analytics
 
         // Example: FirebaseCrashlytics.getInstance().recordException(throwable)
@@ -99,48 +97,46 @@ abstract class AndromedaViewModel(
     private fun dispatcherLaunch(
         dispatcher: CoroutineDispatcher = dispatcherProvider.main,
         start: CoroutineStart = CoroutineStart.DEFAULT,
-        block: suspend CoroutineScope.() -> Unit
-    ): Job = viewModelScope.launch(
-        context = dispatcher + coroutineExceptionHandler,
-        start = start,
-        block = block
-    )
+        block: suspend CoroutineScope.() -> Unit,
+    ): Job =
+        viewModelScope.launch(
+            context = dispatcher + coroutineExceptionHandler,
+            start = start,
+            block = block,
+        )
 
     /** Launches a coroutine on [AndromedaDispatcherProvider.io]. */
     @AnyThread
     protected fun ioLaunch(
         start: CoroutineStart = CoroutineStart.DEFAULT,
-        block: suspend CoroutineScope.() -> Unit
+        block: suspend CoroutineScope.() -> Unit,
     ): Job = dispatcherLaunch(dispatcherProvider.io, start = start, block = block)
 
     /** Launches a coroutine on [AndromedaDispatcherProvider.main]. */
     @MainThread
     protected fun mainLaunch(
         start: CoroutineStart = CoroutineStart.DEFAULT,
-        block: suspend CoroutineScope.() -> Unit
+        block: suspend CoroutineScope.() -> Unit,
     ): Job = dispatcherLaunch(dispatcherProvider.main, start = start, block = block)
 
     /** Launches a coroutine on [AndromedaDispatcherProvider.default]. */
     @AnyThread
     protected fun defaultLaunch(
         start: CoroutineStart = CoroutineStart.DEFAULT,
-        block: suspend CoroutineScope.() -> Unit
+        block: suspend CoroutineScope.() -> Unit,
     ): Job = dispatcherLaunch(dispatcherProvider.default, start = start, block = block)
 
     /** Executes [block] in [AndromedaDispatcherProvider.io] context. */
-    protected suspend inline fun <R> ioContext(
-        noinline block: suspend CoroutineScope.() -> R
-    ): R = withContext(dispatcherProvider.io, block = block)
+    protected suspend inline fun <R> ioContext(noinline block: suspend CoroutineScope.() -> R): R =
+        withContext(dispatcherProvider.io, block = block)
 
     /** Executes [block] in [AndromedaDispatcherProvider.main] context. */
-    protected suspend inline fun <R> mainContext(
-        noinline block: suspend CoroutineScope.() -> R
-    ): R = withContext(dispatcherProvider.main, block = block)
+    protected suspend inline fun <R> mainContext(noinline block: suspend CoroutineScope.() -> R): R =
+        withContext(dispatcherProvider.main, block = block)
 
     /** Executes [block] in [AndromedaDispatcherProvider.default] context. */
-    protected suspend inline fun <R> defaultContext(
-        noinline block: suspend CoroutineScope.() -> R
-    ): R = withContext(dispatcherProvider.default, block = block)
+    protected suspend inline fun <R> defaultContext(noinline block: suspend CoroutineScope.() -> R): R =
+        withContext(dispatcherProvider.default, block = block)
 
     /**
      * Called when the [ViewModel] is about to be destroyed.
@@ -176,31 +172,5 @@ abstract class AndromedaViewModel(
         check(!Looper.getMainLooper().isCurrentThread) {
             "This operation must not be executed on the main thread."
         }
-    }
-
-    /**
-     * Called when the associated Composable leaves the composition or the ViewModel is no longer observed.
-     *
-     * This method provides a single point to perform cleanup operations such as:
-     * - Canceling timers, jobs, or coroutines
-     * - Removing listeners or observers
-     * - Resetting temporary state
-     * - Freeing resources that are no longer needed
-     *
-     * This is automatically invoked when used with [androidx.compose.runtime.DisposableEffect] in a Composable:
-     * ```kotlin
-     * @Composable
-     * fun ObserveViewModelCleanup(viewModel: AndromedaViewModel) {
-     *     DisposableEffect(viewModel) {
-     *         onDispose { viewModel.onDispose() }
-     *     }
-     * }
-     * ```
-     *
-     * Subclasses can override this method to provide custom disposal logic.
-     * Make sure that any long-running or asynchronous work is safely canceled to prevent memory leaks or crashes.
-     */
-    open fun onDispose() {
-        // cancel timers, reset state, remove listeners, etc.
     }
 }

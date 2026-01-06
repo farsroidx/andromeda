@@ -35,7 +35,6 @@ import kotlinx.coroutines.CoroutineDispatcher
  * - [main]    For UI-related work and state updates
  */
 interface AndromedaDispatcherProvider {
-
     /**
      * Dispatcher optimized for I/O-bound operations.
      *
@@ -65,5 +64,4 @@ interface AndromedaDispatcherProvider {
      * - Complex calculations
      */
     val default: CoroutineDispatcher
-
 }
