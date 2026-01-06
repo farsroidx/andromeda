@@ -41,7 +41,7 @@ enum class Module(val str: String, val artifact: String) {
 
 }
 
-fun MavenPublication.addPom(module: Module, group: String, version: String) {
+fun MavenPublication.pomOptions(module: Module, group: String, version: String) {
 
     this.groupId = group
     this.version = version
@@ -60,7 +60,7 @@ fun MavenPublication.addPom(module: Module, group: String, version: String) {
 
             this.license {
 
-                this.name.set("Apache-2.0")
+                this.name.set("The Apache Software License, Version 2.0")
 
                 this.url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
 

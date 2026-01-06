@@ -1,5 +1,3 @@
-import kotlin.text.replace
-
 plugins {
     // maven
     id("maven-publish")
@@ -47,7 +45,7 @@ afterEvaluate {
             throw Exception("signing.filePath is missing from local.properties.")
         }
 
-        val signingFile = project.file(filePath.replace("\"", ""))
+        val signingFile = project.file(filePath)
 
         if (!signingFile.exists() || password.isBlank()) {
             throw Exception("signing.filePath or signing.password is missing from local.properties.")
