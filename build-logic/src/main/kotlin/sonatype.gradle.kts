@@ -25,7 +25,7 @@ afterEvaluate {
                 val password = findLocalProperty(key = "sonatype.password")
 
                 if (username.isBlank() || password.isBlank()) {
-                    throw Exception("sonatype.username or sonatype.password is missing from local.properties.")
+                    throw IllegalArgumentException("sonatype.username or sonatype.password is missing from local.properties.")
                 }
 
                 this.credentials {
@@ -42,13 +42,13 @@ afterEvaluate {
         val password = findLocalProperty(key = "signing.password")
 
         if (filePath.isBlank()) {
-            throw Exception("signing.filePath is missing from local.properties.")
+            throw IllegalArgumentException("signing.filePath is missing from local.properties.")
         }
 
         val signingFile = project.file(filePath)
 
         if (!signingFile.exists() || password.isBlank()) {
-            throw Exception("signing.filePath or signing.password is missing from local.properties.")
+            throw IllegalArgumentException("signing.filePath or signing.password is missing from local.properties.")
         }
 
         this.useInMemoryPgpKeys(signingFile.readText(), password)

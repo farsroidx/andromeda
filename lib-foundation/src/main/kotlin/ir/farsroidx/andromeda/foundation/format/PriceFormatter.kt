@@ -40,7 +40,9 @@ object PriceFormatter {
 
         return try {
             "$prefix${formatter.format(number)}$suffix"
-        } catch (e: Exception) {
+        } catch (e: IllegalArgumentException) {
+            "${prefix}0$suffix"
+        } catch (e: ArithmeticException) {
             "${prefix}0$suffix"
         }
     }
