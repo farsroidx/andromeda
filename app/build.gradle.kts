@@ -11,17 +11,18 @@ android {
     namespace = "ir.farsroidx.app"
 
     compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
+        version =
+            release(36) {
+                minorApiLevel = 1
+            }
     }
 
     defaultConfig {
-        applicationId             = "ir.farsroidx.andromeda"
-        minSdk                    = 23
-        targetSdk                 = 36
-        versionCode               = 1
-        versionName               = "1.0.0"
+        applicationId = "ir.farsroidx.andromeda"
+        minSdk = 23
+        targetSdk = 36
+        versionCode = 1
+        versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -32,7 +33,8 @@ android {
             isMinifyEnabled = false
 
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
             )
         }
     }
@@ -55,8 +57,8 @@ dependencies {
 
     implementation(
         platform(
-            notation = "ir.farsroidx:andromeda-bom:${rootProject.version}"
-        )
+            notation = "ir.farsroidx:andromeda-bom:${rootProject.version}",
+        ),
     )
 
     // noinspection UseTomlInstead
