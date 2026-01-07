@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Andromeda</string>
+    <string name="app_desc">Andromeda is a modern, modular Android architecture toolkit designed to help you build scalable, maintainable, and production-ready Android applications.</string>
+</resources>
