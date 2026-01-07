@@ -1,8 +1,0 @@
-[**/src/test/**]
-ktlint = disabled
-
-[**/src/androidTest/**]
-ktlint = disabled
-
-[**/build/**]
-ktlint = disabled
