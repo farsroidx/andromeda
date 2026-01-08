@@ -49,6 +49,20 @@ plugins {
     alias(libs.plugins.andromeda.tools)
 }
 
+val property1: String?      = findLocalProperty(key = "property1")
+val property2: Int          = findLocalIntProperty(key = "property2", default = 0)
+val property3: Boolean      = findLocalBooleanProperty(key = "property3", default = false)
+val property4: Double       = findLocalDoubleProperty(key = "property4", default = 0.0)
+val property5: List<String> = getLocalListProperty(key = "property5", delimiter = ",")
+
+dLog("DEBUG LOG")
+
+iLog("INFO LOG")
+
+wLog("WARNING LOG")
+
+eLog("ERROR LOG")
+
 andromeda {
     
     // Extract name from: 'src/main/res/values/strings.xml'
