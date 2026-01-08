@@ -17,7 +17,7 @@ class AndromedaPublishingPlugin : Plugin<Project> {
 
     override fun apply(project: Project) = with(project) {
 
-        pluginManager.apply("maven-publish")
+        // pluginManager.apply("maven-publish")
         pluginManager.apply("signing")
 
         afterEvaluate {
@@ -138,8 +138,6 @@ class AndromedaPublishingPlugin : Plugin<Project> {
                             it.name.startsWith("maven")
                         }
                 )
-
-//                sign(extensions.getByType(PublishingExtension::class.java).publications)
             }
         }
     }
