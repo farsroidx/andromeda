@@ -70,7 +70,7 @@ fun Project.findLocalDoubleProperty(
 ): Double = PropertyManager.getDouble(this, key, default, file)
 
 /** Reads a delimited list from a property (default delimiter is comma). */
-fun Project.getLocalListProperty(
+fun Project.findLocalListProperty(
     key: String,
     delimiter: String = ",",
     file: String = "local.properties",
