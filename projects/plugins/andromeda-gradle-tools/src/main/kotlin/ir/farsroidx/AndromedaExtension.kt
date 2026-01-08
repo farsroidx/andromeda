@@ -7,9 +7,12 @@ import ir.farsroidx.models.BuildInfo
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
 import org.w3c.dom.Element
+import org.xml.sax.SAXException
 import java.io.File
+import java.io.IOException
 import java.util.Locale
 import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.parsers.ParserConfigurationException
 
 /**
  * Represents the extension entry point for the Andromeda Gradle Plugin.
@@ -102,7 +105,7 @@ open class AndromedaExtension(
                                 try {
                                     val file = project.file(resourceFilePath)
                                     if (!file.exists()) {
-                                        throw Exception("The resource file '$resourceFilePath' not found.")
+                                        throw IllegalAccessException("The resource file '$resourceFilePath' not found.")
                                     }
 
                                     val doc =
@@ -121,8 +124,14 @@ open class AndromedaExtension(
                                         .firstOrNull { element ->
                                             element.getAttribute("name") == resourceFieldName
                                         }?.textContent ?: "app-${variant.name}"
-                                } catch (e: Exception) {
-                                    println("⚠️ Failed to parse XML: ${e.message}")
+                                } catch (e: ParserConfigurationException) {
+                                    println("⚠️ Parser configuration error: ${e.message}")
+                                    "app-${variant.name}"
+                                } catch (e: SAXException) {
+                                    println("⚠️ XML parsing error: ${e.message}")
+                                    "app-${variant.name}"
+                                } catch (e: IOException) {
+                                    println("⚠️ IO error reading file '$resourceFilePath': ${e.message}")
                                     "app-${variant.name}"
                                 }
 
