@@ -4,29 +4,30 @@ package ir.farsroidx
 
 import ir.farsroidx.managers.PropertyManager
 import org.gradle.api.Project
+import java.awt.Color.red
 
 // Normal colors
-private const val black = "\u001B[30m"
-const val red     = "\u001B[31m"
-const val green   = "\u001B[32m"
-const val yellow  = "\u001B[33m"
-const val blue    = "\u001B[34m"
-const val magenta = "\u001B[35m"
-const val cyan    = "\u001B[36m"
-const val white   = "\u001B[37m"
+private const val BLACK = "\u001B[30m"
+internal const val RED = "\u001B[31m"
+internal const val GREEN = "\u001B[32m"
+internal const val YELLOW = "\u001B[33m"
+internal const val BLUE = "\u001B[34m"
+internal const val MAGENTA = "\u001B[35m"
+internal const val CYAN = "\u001B[36m"
+internal const val WHITE = "\u001B[37m"
 
 // Bright colors
-const val brightBlack = "\u001B[90m"
-const val brightRed   = "\u001B[91m"
-const val brightGreen = "\u001B[92m"
-const val brightYellow = "\u001B[93m"
-const val brightBlue    = "\u001B[94m"
-const val brightMagenta = "\u001B[95m"
-const val brightCyan    = "\u001B[96m"
-const val brightWhite   = "\u001B[97m"
+internal const val BRIGHT_BLACK = "\u001B[90m"
+internal const val BRIGHT_RED = "\u001B[91m"
+internal const val BRIGHT_GREEN = "\u001B[92m"
+internal const val BRIGHT_YELLOW = "\u001B[93m"
+internal const val BRIGHT_BLUE = "\u001B[94m"
+internal const val BRIGHT_MAGENTA = "\u001B[95m"
+internal const val BRIGHT_CYAN = "\u001B[96m"
+internal const val BRIGHT_WHITE = "\u001B[97m"
 
 // Reset
-const val reset = "\u001B[0m"
+internal const val RESET = "\u001B[0m"
 
 /**
  * Returns the property value for [key].
@@ -40,59 +41,68 @@ const val reset = "\u001B[0m"
  *
  * @receiver Project current Gradle project
  * @param key property name
- * @return property value or empty string if not found
+ * @return property value or null string if not found
  */
-fun Project.getPropertyValue(key: String): String = PropertyManager.getPropertyValue(this, key)
+fun Project.findLocalProperty(
+    key: String,
+    file: String = "local.properties",
+): String? = PropertyManager.findLocalProperty(this, key, file)
 
 /** Safe Int property reader with default. */
-fun Project.getIntProperty(key: String, default: Int = 0): Int = PropertyManager.getInt(this, key, default)
+fun Project.findLocalIntProperty(
+    key: String,
+    default: Int = 0,
+    file: String = "local.properties",
+): Int = PropertyManager.getInt(this, key, default, file)
 
 /** Safe Boolean property reader with common truthy/falsy values. */
-fun Project.getBooleanProperty(key: String, default: Boolean = false): Boolean =
-    PropertyManager.getBoolean(this, key, default)
+fun Project.findLocalBooleanProperty(
+    key: String,
+    default: Boolean = false,
+    file: String = "local.properties",
+): Boolean = PropertyManager.getBoolean(this, key, default, file)
 
 /** Safe Double property reader with default. */
-fun Project.getDoubleProperty(key: String, default: Double = 0.0): Double = PropertyManager.getDouble(this, key, default)
+fun Project.findLocalDoubleProperty(
+    key: String,
+    default: Double = 0.0,
+    file: String = "local.properties",
+): Double = PropertyManager.getDouble(this, key, default, file)
 
 /** Reads a delimited list from a property (default delimiter is comma). */
-fun Project.getListProperty(key: String, delimiter: String = ","): List<String> =
-    PropertyManager.getList(this, key, delimiter)
+fun Project.getLocalListProperty(
+    key: String,
+    delimiter: String = ",",
+    file: String = "local.properties",
+): List<String> = PropertyManager.getList(this, key, delimiter, file)
 
 /**
  * Logs a debug message in green.
  *
  * @param message The message to log.
  */
-fun dLog(message: Any) {
-    println("${brightGreen}[DEBUG] $message$reset")
-}
+fun dLog(message: Any) = println("$BRIGHT_GREEN[DEBUG] $message$RESET")
 
 /**
  * Logs an informational message in blue.
  *
  * @param message The message to log.
  */
-fun iLog(message: Any) {
-    println("${brightBlue}[INFO] $message$reset")
-}
+fun iLog(message: Any) = println("$BRIGHT_BLUE[INFO] $message$RESET")
 
 /**
  * Logs a warning message in yellow.
  *
  * @param message The message to log.
  */
-fun wLog(message: Any) {
-    println("$brightYellow[WARN] $message$reset")
-}
+fun wLog(message: Any) = println("$BRIGHT_YELLOW[WARN] $message$RESET")
 
 /**
  * Logs an error message in red.
  *
  * @param message The message to log.
  */
-fun eLog(message: Any) {
-    println("${red}[ERROR] $message$reset")
-}
+fun eLog(message: Any) = println("$red[ERROR] $message$RESET")
 
 /**
  * Retrieves the existing Gradle extension of type [T] or creates a new one if it does not exist.
@@ -116,9 +126,10 @@ fun eLog(message: Any) {
  * @receiver Project The Gradle project to attach or retrieve the extension from.
  * @return The extension instance of type [T] associated with this project.
  */
-internal inline fun <reified T> Project.createOrGetExtension(name: String): T {
-    return (extensions.findByName(name) as? T)
+internal inline fun <reified T> Project.createOrGetExtension(name: String): T =
+    (extensions.findByName(name) as? T)
         ?: extensions.create(
-            name, T::class.java, this
+            name,
+            T::class.java,
+            this,
         )
-}
