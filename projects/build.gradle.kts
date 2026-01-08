@@ -1,4 +1,7 @@
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
+import java.io.IOException
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import kotlin.text.replace
 
 plugins {
@@ -10,14 +13,6 @@ plugins {
     // ktLint
     alias(libs.plugins.ktlint) apply false
 }
-
-private val gradleLocalTaskName    = "publishToMavenLocal"
-private val gradlePublishTaskName  = "publishAndromedaToMavenLocal"
-private val gradleChecksumTaskName = "generateChecksums"
-
-private val ktLintTaskName       = "ktlintFormatAndCheck"
-private val ktLintFormatTaskName = "ktlintFormat"
-private val ktLintCheckTaskName  = "ktlintCheck"
 
 allprojects {
 
@@ -58,7 +53,7 @@ private fun Project.configureKtLint(android: Boolean) {
     }
 }
 
-tasks.register(ktLintTaskName) {
+tasks.register("ktLintFormatAndCheck") {
 
     group       = "Verification"
     description = "Formats Kotlin code with ktlint and then checks style for all modules."
@@ -72,8 +67,8 @@ tasks.register(ktLintTaskName) {
 
         subproject.pluginManager.withPlugin(ktLintPluginId) {
 
-            formatTasks += subproject.tasks.named(ktLintFormatTaskName)
-            checkTasks  += subproject.tasks.named(ktLintCheckTaskName)
+            formatTasks += subproject.tasks.named("ktlintFormat")
+            checkTasks  += subproject.tasks.named("ktlintCheck")
         }
     }
 
@@ -82,22 +77,23 @@ tasks.register(ktLintTaskName) {
     finalizedBy(checkTasks)
 }
 
-tasks.register(gradlePublishTaskName) {
+tasks.register("publishAndromedaLibrariesToMavenLocal") {
 
     group       = "publishing"
     description = "Publishes all Andromeda libraries and BOM to Maven Local."
 
     val publishableProjects = subprojects.filter {
-        it.plugins.hasPlugin(libs.plugins.maven.publish.get().pluginId)
+        it.plugins.hasPlugin(libs.plugins.maven.publish.get().pluginId) &&
+            !it.plugins.hasPlugin(libs.plugins.gradle.publish.get().pluginId)
     }
 
     val libPublishTasks = publishableProjects
         .filter { it.name != projects.bom.andromedaBom.name }
-        .map { it.tasks.named(gradleLocalTaskName) }
+        .map { it.tasks.named("publishToMavenLocal") }
 
     val bomPublishTask = publishableProjects
         .filter { it.name == projects.bom.andromedaBom.name }
-        .map { it.tasks.named(gradleLocalTaskName) }
+        .map { it.tasks.named("publishToMavenLocal") }
         .firstOrNull()
 
     dependsOn(libPublishTasks)
@@ -113,14 +109,14 @@ tasks.register(gradlePublishTaskName) {
         }
     }
 
-    finalizedBy(gradleChecksumTaskName)
+    finalizedBy("generateChecksums")
 
     doLast {
         println("✔ All libraries published, BOM published last (${rootProject.version})")
     }
 }
 
-tasks.register(gradleChecksumTaskName) {
+tasks.register("generateChecksums") {
 
     group       = "publishing"
     description = "Generate MD5 and SHA1 checksums for all modules before publishing to Maven Local"
@@ -159,7 +155,7 @@ tasks.register(gradleChecksumTaskName) {
 
                                 if (!md5File.exists()) {
 
-                                    val md5 = java.security.MessageDigest.getInstance("MD5")
+                                    val md5 = MessageDigest.getInstance("MD5")
                                         .digest(bytes)
                                         .joinToString("") { "%02x".format(it) }
 
@@ -170,7 +166,7 @@ tasks.register(gradleChecksumTaskName) {
 
                                 if (!sha1File.exists()) {
 
-                                    val sha1 = java.security.MessageDigest.getInstance("SHA-1")
+                                    val sha1 = MessageDigest.getInstance("SHA-1")
                                         .digest(bytes)
                                         .joinToString("") { "%02x".format(it) }
 
@@ -179,11 +175,11 @@ tasks.register(gradleChecksumTaskName) {
                                     println("✓ Generated SHA1 for: ${file.relativeTo(mavenLocalRepo)}")
                                 }
 
-                            } catch (e: java.io.IOException) {
+                            } catch (e: IOException) {
 
                                 println("⚠️ IO error generating checksums for ${file.name}: ${e.message}")
 
-                            } catch (e: java.security.NoSuchAlgorithmException) {
+                            } catch (e: NoSuchAlgorithmException) {
 
                                 println("⚠️ Algorithm not found when generating checksums for ${file.name}: ${e.message}")
 
@@ -192,5 +188,43 @@ tasks.register(gradleChecksumTaskName) {
                     }
                 }
         }
+    }
+}
+
+tasks.register("publishAndromedaPluginsToMavenLocal") {
+
+    group       = "publishing"
+    description = "Publishes Andromeda Tools Gradle plugin to Maven Local."
+
+    val publishableProjects = subprojects.filter {
+        it.plugins.hasPlugin(libs.plugins.gradle.publish.get().pluginId)
+    }
+
+    val pluginPublishTasks = publishableProjects
+        .map { it.tasks.named("publishToMavenLocal") }
+
+    dependsOn(pluginPublishTasks)
+
+    doLast {
+        println("✔ Andromeda Gradle plugins published.")
+    }
+}
+
+tasks.register("publishAndromedaPluginsToGradlePortal") {
+
+    group       = "publishing"
+    description = "Publishes Andromeda plugins to Gradle Plugin Portal"
+
+    val publishableProjects = subprojects.filter {
+        it.plugins.hasPlugin(libs.plugins.gradle.publish.get().pluginId)
+    }
+
+    val pluginPublishTasks = publishableProjects
+        .map { it.tasks.named("publishPlugins") }
+
+    dependsOn(pluginPublishTasks)
+
+    doLast {
+        println("✔ Andromeda Gradle plugins published.")
     }
 }
