@@ -35,13 +35,14 @@ Andromeda is composed of multiple standalone modules, including but not limited 
 | Feature | Unavailable | In Development | Stable |                                                                                 Latest Version                                                                                 |
 |:--------|:-----------:|:--------------:|:------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 | andromeda-bom                                  |—|—|—|            [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-bom.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-bom)            |
+| [andromeda-crypto](projects/android/andromeda-crypto)                 | |✔|✔|         [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-crypto.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-crypto)         |
 | [andromeda-foundation](projects/android/andromeda-foundation)         | |✔|✔|     [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-foundation.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-foundation)     |
 | [andromeda-foundation-ktx](projects/android/andromeda-foundation-ktx) | |✔|✔| [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-foundation-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-foundation-ktx) |
 | [andromeda-ktx](projects/android/andromeda-ktx)                       | |✔|✔|            [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ktx)            |
 | [andromeda-logging](projects/android/andromeda-logging)               | |✔|✔|        [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-logging.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-logging)        |
 | [andromeda-ui](projects/android/andromeda-ui)                         | |✔|✔|             [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ui.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ui)             |
 | [andromeda-ui-ktx](projects/android/andromeda-ui-ktx)                 | |✔|✔|         [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ui-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ui-ktx)         |
-| [andromeda-viewmodel](projects/android/andromeda-viewmodel)           | | |✔|       [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-viewmodel.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-viewmodel)       |
+| [andromeda-viewmodel](projects/android/andromeda-viewmodel)           | | |✔|       [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-viewmodel.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-viewmodel)      |
 | [andromeda-gradle-tools](projects/plugins/andromeda-gradle-tools)     | |✔|✔|       [![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/ir.farsroidx.andromeda-gradle-tools)](https://plugins.gradle.org/plugin/ir.farsroidx.andromeda-gradle-tools) |
 
 Each module is versioned and published as an independent artifact, while remaining fully compatible through the Andromeda BOM.
@@ -73,6 +74,7 @@ andromeda-bom = "🔝LATEST_VERSION🔝"
 
 [libraries]
 andromeda-bom            = { module = "ir.farsroidx:andromeda-bom", version.ref = "andromeda-bom" }
+andromeda-crypto         = { module = "ir.farsroidx:andromeda-crypto"                             }
 andromeda-foundation     = { module = "ir.farsroidx:andromeda-foundation"                         }
 andromeda-foundation-ktx = { module = "ir.farsroidx:andromeda-foundation-ktx"                     }
 andromeda-ktx            = { module = "ir.farsroidx:andromeda-ktx"                                }
@@ -83,6 +85,7 @@ andromeda-viewmodel      = { module = "ir.farsroidx:andromeda-viewmodel"        
 
 [bundles]
 andromeda = [
+    "andromeda-crypto",
     "andromeda-foundation",
     "andromeda-foundation-ktx",
     "andromeda-ktx",
@@ -107,6 +110,7 @@ dependencies {
     implementation(libs.bundles.andromeda)
 
     // without bundle:
+    implementation(libs.andromeda.crypto)
     implementation(libs.andromeda.foundation)
     implementation(libs.andromeda.foundation.ktx)
     implementation(libs.andromeda.ktx)
