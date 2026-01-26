@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.andromeda.publishing)
 }
 
-version = "1.0.0"
+version = "1.0.1"
 
 kotlin {
     jvmToolchain(17)
@@ -29,7 +29,7 @@ gradlePlugin {
 
         create("andromeda-gradle-tools") {
             id = "${rootProject.group}.andromeda-gradle-tools"
-            implementationClass = "ir.farsroidx.AndromedaToolsPlugin"
+            implementationClass = "AndromedaToolsPlugin"
             displayName = "Andromeda Gradle Plugin"
             description =
                 """

@@ -9,11 +9,11 @@ plugins {
     alias(libs.plugins.andromeda.publishing)
 }
 
-version = "1.0.0"
+version = "1.0.1"
 
 android {
 
-    namespace = "ir.farsroidx.andromeda.foundation.ktx"
+    namespace = "andromeda.foundation.ktx"
 
     compileSdk {
         version = release(36)
@@ -58,6 +58,9 @@ dependencies {
 
     // Andromeda
     api(projects.android.andromedaFoundation)
+
+    // Jetbrains
+    implementation(libs.jetbrains.kotlinx.coroutines.android)
 
     // JUnit and Test
     testImplementation(libs.junit)

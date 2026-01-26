@@ -13,7 +13,7 @@ gradlePlugin {
 
             id = "ir.farsroidx.andromeda-publishing"
 
-            implementationClass = "ir.farsroidx.AndromedaPublishingPlugin"
+            implementationClass = "AndromedaPublishingPlugin"
 
         }
     }

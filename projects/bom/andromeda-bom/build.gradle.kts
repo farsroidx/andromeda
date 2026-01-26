@@ -21,6 +21,7 @@ dependencies {
         println("============================================================")
 
         listOf(
+            projects.android.andromedaCrypto,
             projects.android.andromedaFoundation,
             projects.android.andromedaFoundationKtx,
             projects.android.andromedaKtx,

@@ -9,11 +9,11 @@ plugins {
     alias(libs.plugins.andromeda.publishing)
 }
 
-version = "1.0.0"
+version = "1.0.1"
 
 android {
 
-    namespace = "ir.farsroidx.andromeda.ui.ktx"
+    namespace = "andromeda.ui.ktx"
 
     compileSdk {
         version = release(36)

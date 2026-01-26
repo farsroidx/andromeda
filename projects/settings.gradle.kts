@@ -5,6 +5,7 @@ pluginManagement {
 
     repositories {
         mavenLocal()
+        maven(url = "https://maven.myket.ir")
         mavenCentral()
         google()
         gradlePluginPortal()
@@ -20,6 +21,7 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         mavenLocal()
+        maven(url = "https://maven.myket.ir")
         mavenCentral()
         google()
         maven(url = "https://jitpack.io")
@@ -33,6 +35,7 @@ rootProject.name = "Andromeda"
 
 include(
     // ANDROID
+    ":android:andromeda-crypto",
     ":android:andromeda-foundation",
     ":android:andromeda-foundation-ktx",
     ":android:andromeda-ktx",

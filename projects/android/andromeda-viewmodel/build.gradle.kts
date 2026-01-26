@@ -9,11 +9,11 @@ plugins {
     alias(libs.plugins.andromeda.publishing)
 }
 
-version = "2.2.1"
+version = "2.2.2"
 
 android {
 
-    namespace = "ir.farsroidx.andromeda.viewmodel"
+    namespace = "andromeda.viewmodel"
 
     compileSdk {
         version = release(36)
