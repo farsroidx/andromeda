@@ -1,4 +1,4 @@
-# Andromeda ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white) ![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red.svg?style=for-the-badge&logo=heart&logoColor=white)
+# Andromeda ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white) ![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red.svg?style=for-the-badge&logo=heart&logoColor=white) 
 
 [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-bom.svg)](https://central.sonatype.com/search?q=g:ir.farsroidx&smo=true)
 [![License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
@@ -7,6 +7,8 @@
 ![Min SDK](https://img.shields.io/badge/minSdk-23%2B-orange.svg?style=flat)
 [![ktlint](https://img.shields.io/badge/code%20style-ktlint-7F52FF.svg?logo=kotlin&logoColor=white)](https://ktlint.github.io/)
 ![Last Commit](https://img.shields.io/github/last-commit/farsroidx/andromeda)
+---
+💚 🤍 ❤️
 
 **Andromeda** is a modern, modular Android architecture toolkit designed to help you build scalable, maintainable, and production-ready Android applications.
 
