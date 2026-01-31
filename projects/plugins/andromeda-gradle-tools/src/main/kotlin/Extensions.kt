@@ -101,33 +101,3 @@ fun wLog(message: Any) = println("$BRIGHT_YELLOW[WARN] $message$RESET")
  * @param message The message to log.
  */
 fun eLog(message: Any) = println("$red[ERROR] $message$RESET")
-
-/**
- * Retrieves the existing Gradle extension of type [T] or creates a new one if it does not exist.
- *
- * This generic helper ensures that only a single instance of the specified extension type [T]
- * is associated with the project, preventing `DuplicateExtensionException` when the plugin
- * is applied multiple times (e.g., in both root and subprojects).
- *
- * If an extension with the given [name] already exists in the project's extension container,
- * that instance is returned. Otherwise, a new instance of [T] is created, registered, and returned.
- *
- * The `reified` type parameter allows type-safe access to the extension type at runtime.
- *
- * Example usage:
- * ```
- * val rootExt = project.createOrGetExtension<MyExtension>("myExtension")
- * rootExt.someProperty = "value"
- * ```
- *
- * @param name The name of the extension.
- * @receiver Project The Gradle project to attach or retrieve the extension from.
- * @return The extension instance of type [T] associated with this project.
- */
-internal inline fun <reified T> Project.createOrGetExtension(name: String): T =
-    (extensions.findByName(name) as? T)
-        ?: extensions.create(
-            name,
-            T::class.java,
-            this,
-        )

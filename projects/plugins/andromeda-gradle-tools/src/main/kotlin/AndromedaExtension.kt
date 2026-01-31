@@ -44,9 +44,7 @@ import javax.xml.parsers.ParserConfigurationException
  *
  * @property project The Gradle [org.gradle.api.Project] to which this extension is attached.
  */
-open class AndromedaExtension(
-    private val project: Project,
-) {
+open class AndromedaExtension(private val project: Project) {
     /**
      * Automatically renames generated APK files based on app metadata and build configuration.
      *

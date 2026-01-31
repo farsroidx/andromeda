@@ -36,7 +36,8 @@ class AndromedaToolsPlugin : Plugin<Project> {
         )
 
         // Register or retrieve the Andromeda extension to expose plugin configuration options
-        project.createOrGetExtension<AndromedaExtension>("andromeda")
+        val andromedaExtension = project.extensions.findByName("andromeda") as? AndromedaExtension
+            ?: project.extensions.create("andromeda", AndromedaExtension::class.java, project)
     }
 
     private fun findPluginAttributes(key: String): String? {

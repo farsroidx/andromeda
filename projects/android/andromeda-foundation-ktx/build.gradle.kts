@@ -1,8 +1,6 @@
 plugins {
     // android
     alias(libs.plugins.android.library)
-    // jetbrains
-    alias(libs.plugins.jetbrains.kotlin.android)
     // maven
     alias(libs.plugins.maven.publish)
     // buildLogic
@@ -49,7 +47,7 @@ android {
 
         singleVariant("release") {
             withSourcesJar()
-            withJavadocJar()
+            // withJavadocJar()
         }
     }
 }

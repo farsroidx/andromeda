@@ -1,8 +1,8 @@
+
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import java.io.IOException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import kotlin.text.replace
 
 plugins {
     // android
@@ -18,7 +18,7 @@ allprojects {
 
     group = "ir.farsroidx"
 
-    version = "2026.01.26"
+    version = "2026.01.27"
 
 }
 
@@ -98,7 +98,9 @@ tasks.register("publishAndromedaLibrariesToMavenLocal") {
 
     dependsOn(libPublishTasks)
 
-    dependsOn(bomPublishTask)
+    bomPublishTask?.let {
+        dependsOn(it)
+    }
 
     bomPublishTask?.let { bomTask ->
 

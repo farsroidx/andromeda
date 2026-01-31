@@ -1,9 +1,6 @@
 plugins {
     // android
     alias(libs.plugins.android.library)
-    // jetbrains
-    alias(libs.plugins.jetbrains.kotlin.kapt)
-    alias(libs.plugins.jetbrains.kotlin.android)
     // maven
     alias(libs.plugins.maven.publish)
     // builLogic

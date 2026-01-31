@@ -1,8 +1,6 @@
 plugins {
     // android
     alias(libs.plugins.android.library)
-    // jetbrains
-    alias(libs.plugins.jetbrains.kotlin.android)
     // maven
     alias(libs.plugins.maven.publish)
     // buildLogic
@@ -58,6 +56,7 @@ dependencies {
 
     // Androidx
     implementation(libs.androidx.crypto)
+    implementation(libs.androidx.datastore)
 
     // JUnit and Test
     testImplementation(libs.junit)
