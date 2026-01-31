@@ -26,16 +26,16 @@ import javax.crypto.spec.IvParameterSpec
 object AndromedaAES {
     private const val USER_AUTHENTICATION_REQUIRED = false // Set true if you want biometric prompt
 
-    private const val KEY_ALIAS = "ir.farsroidx.andromeda.aes_key"
-    private const val ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
-    private const val BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC
-    private const val PADDING = KeyProperties.ENCRYPTION_PADDING_PKCS7
-    private const val TRANSFORMATION = "$ALGORITHM/$BLOCK_MODE/$PADDING"
-    private const val KEY_SIZE = 256
+    const val KEY_ALIAS = "ir.farsroidx.andromeda.aes_key"
+    const val ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
+    const val BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC
+    const val PADDING = KeyProperties.ENCRYPTION_PADDING_PKCS7
+    const val TRANSFORMATION = "$ALGORITHM/$BLOCK_MODE/$PADDING"
+    const val KEY_SIZE = 256
 
     fun isKeyAvailable(): Boolean = AndromedaKeyStore.isKeyAvailable(KEY_ALIAS)
 
-    private fun getSecretKey(): SecretKey =
+    fun getSecretKey(): SecretKey =
         AndromedaKeyStore.getSecretKey(KEY_ALIAS)
             ?: AndromedaKeyStore.initSecretKey(
                 size = KEY_SIZE,
