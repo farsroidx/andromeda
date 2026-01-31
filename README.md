@@ -7,6 +7,8 @@
 ![Min SDK](https://img.shields.io/badge/minSdk-23%2B-orange.svg?style=flat)
 [![ktlint](https://img.shields.io/badge/code%20style-ktlint-7F52FF.svg?logo=kotlin&logoColor=white)](https://ktlint.github.io/)
 ![Last Commit](https://img.shields.io/github/last-commit/farsroidx/andromeda)
+---
+💚 🤍 ❤️
 
 **Andromeda** is a modern, modular Android architecture toolkit designed to help you build scalable, maintainable, and production-ready Android applications.
 
