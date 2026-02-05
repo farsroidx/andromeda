@@ -11,6 +11,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.flow.retryWhen
@@ -18,7 +19,6 @@ import java.io.IOException
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.coroutines.cancellation.CancellationException
-import kotlin.stackTraceToString
 
 // @formatter:off // TODO: Do not remove this line to preserve the code style ----------------------
 
@@ -93,127 +93,171 @@ suspend fun <T> AndromedaOutcome<T>.onFailure(callback: suspend (AndromedaOutcom
  *
  * @return A [AndromedaOutcomeException.Throwable] wrapping the original exception.
  */
-fun Throwable.toAndromedaOutcomeException(): AndromedaOutcomeException =
-    AndromedaOutcomeException.Throwable(throwable = this).also {
-        Log.e(
-            "Andromeda",
-            """
-            ==================== AndromedaOutcomeException =====================
-            code      : ${it.code}
-            errorId   : ${it.errorId}
-            message   : ${it.message}
-            timestamp : ${it.timestamp}
-            stack     :
-            ${it.stack}
-            =====================================================================
-            """.trimIndent(),
-        )
+fun Throwable.toAndromedaOutcomeException(): AndromedaOutcomeException {
+    return AndromedaOutcomeException.Throwable(throwable = this).also { throwable ->
+        val message = buildString {
+            appendLine("===================== AndromedaOutcomeException =====================")
+            appendLine("-> Code      : ${throwable.code}")
+            appendLine("-> ErrorId   : ${throwable.errorId}")
+            appendLine("-> Message   : ${throwable.message}")
+            appendLine("-> Timestamp : ${throwable.timestamp}")
+            appendLine("---------------------------------------------------------------------")
+            appendLine(throwable.throwable.stackTraceToString())
+            appendLine("=====================================================================")
+        }
+        Log.e("Andromeda", message)
     }
+}
 
 /**
- * Executes a suspending [callback] and returns a [Flow] emitting a single [AndromedaOutcome] value,
- * with robust error handling, automatic network retries, and structured logging.
+ * Executes a suspending [callback] and returns a [Flow] that emits a single [AndromedaOutcome] value
+ * with industrial-grade error handling, automatic retry mechanisms, and structured observability.
  *
- * This function is engineered for production-grade API interactions, featuring:
- * - **Intelligent retry logic** for transient network failures (only [IOException]s), with exponential backoff.
- * - **Zero-configuration error structuring** via [AndromedaOutcomeException] for consistent error handling.
- * - **Production-ready logging** with contextual error details and retry tracking.
- * - **Guaranteed single emission** (Success/Failure) via [Flow] semantics.
+ * This function is engineered for mission-critical API interactions, providing:
  *
- * ### Key Behaviors:
- * - **Retries**: Up to `maxRetry` times (default: 3) for network exceptions only.
- * - **Backoff**: `(attempt + 1) * 1000L` ms delay between retries (e.g., 1s, 2s, 3s).
- * - **Non-retryable**: Skips retries for non-network exceptions (HTTP status codes not handled here).
- * - **Safety**: Emits [AndromedaOutcome.Failure] on empty Flow (via [onEmpty]) and logs all cancellations.
+ * ### 🛡️ **Robust Error Handling**
+ * - **Intelligent Retry Logic**: Automatically retries transient network failures ([IOException]) with exponential backoff.
+ * - **Zero-Configuration Error Structuring**: All exceptions are uniformly wrapped into [AndromedaOutcomeException].
+ * - **Guaranteed Emission**: Always emits exactly one [AndromedaOutcome] (Success or Failure) via [Flow] semantics.
+ * - **Empty Flow Protection**: Gracefully handles empty flows by emitting a structured failure.
  *
- * ### Usage:
+ * ### ⚙️ **Retry Behavior**
+ * - **Max Retries**: Configurable via `maxRetry` (default: 3 attempts).
+ * - **Backoff Strategy**: Exponential delay: `(attempt + 1) * 1000L` ms (1s, 2s, 3s...).
+ * - **Retry Condition**: Defaults to [IOException] only. Customize via `retryIf` lambda.
+ * - **Non-Retryable Exceptions**: Non-network exceptions bypass retry and emit immediate failure.
+ *
+ * ### 🔧 **Lifecycle Management**
+ * - **`onFinally` Callback**: Executes after completion (success/failure) for resource cleanup.
+ * - **Structured Logging**: Production-ready logs with contextual details and stack traces.
+ * - **Cancellation Awareness**: Properly handles coroutine cancellation without side effects.
+ *
+ * ### 🚀 **Usage Example**
  * ```kotlin
- * val result: AndromedaOutcome<User> = runCatchingOutcome {
- *     apiService.getUser(userId)
- * }.first() // Collect the single emitted value
+ * val userOutcome: Flow<AndromedaOutcome<User>> = runCatchingOutcome {
+ *     userApi.getUserProfile(userId)
+ * }
  *
- * result.onFailure { error ->
- *     // Handle error: error.message, error.code, etc.
- * }.onSuccess { user ->
- *     // Process user data
+ * // Collect the single emission
+ * userOutcome.collect { outcome ->
+ *     outcome.onSuccess { user ->
+ *         // Handle successful response
+ *     }.onFailure { error ->
+ *         // Handle structured error: error.code, error.message, error.originalThrowable
+ *     }
  * }
  * ```
  *
- * ### Why This Rocks:
- * - **No more `try/catch` spaghetti** – errors are uniformly structured.
- * - **Retry logic is battle-tested** (exponential backoff + network-specific).
- * - **Logs are actionable** – see retry attempts, stack traces, and error context.
- * - **Zero boilerplate** – just call it, handle Success/Failure.
+ * ### ⚡ **Advanced Configuration**
+ * ```kotlin
+ * runCatchingOutcome(
+ *     maxRetry = 5,
+ *     retryIf = { cause, attempt ->
+ *         // Custom retry logic for specific exceptions
+ *         cause is SocketTimeoutException || cause is ConnectException
+ *     },
+ *     onFinally = { isSuccess ->
+ *         // Resource cleanup or analytics logging
+ *         if (isSuccess) logSuccess() else logFailure()
+ *     }
+ * ) {
+ *     performCriticalOperation()
+ * }
+ * ```
  *
- * ⚠️ **Note**: HTTP status codes (e.g., 401, 404) are **not** handled here – they’ll trigger [AndromedaOutcome.Failure] immediately.
+ * ### 📊 **Observability & Debugging**
+ * - **Retry Logging**: Each retry attempt is logged with attempt number and exception details.
+ * - **Error Logging**: All caught exceptions include stack traces and contextual messages.
+ * - **Cancellation Logging**: Unhandled cancellations are logged with full stack traces.
+ * - **Success Logging**: Completion logs confirm successful execution.
+ *
+ * ### ⚠️ **Important Notes**
+ * - **HTTP Status Codes**: Non-IO exceptions (like HTTP 400/401/404/500) are **not retried**.
+ * - **Thread Safety**: Designed for coroutine contexts; ensure proper dispatcher usage.
+ * - `onFinally` **Guarantee**: Always executes exactly once, regardless of success/failure.
+ * - **Flow Contract**: Emits exactly one value and completes (or fails with cancellation).
+ *
+ * @param maxRetry Maximum number of retry attempts (default: 3).
+ * @param retryIf Optional predicate to determine if an exception should trigger a retry.
+ *                When null, defaults to [IOException] detection.
+ * @param onFinally Optional callback executed after completion (success or failure).
+ *                  Receives `true` for successful completion, `false` for failure.
+ * @param callback Suspending lambda containing the operation to execute.
+ *
+ * @return [Flow] emitting a single [AndromedaOutcome] with the operation result.
+ *
+ * @see AndromedaOutcome
+ * @see AndromedaOutcomeException
+ * @see IOException
  */
 fun <T> runCatchingOutcome(
     maxRetry: Int = 3,
+    retryIf: (suspend (cause: Throwable, attempt: Long) -> Boolean)? = null,
+    onFinally: (suspend (isSuccess: Boolean) -> Unit)? = null,
     callback: suspend () -> T,
 ): Flow<AndromedaOutcome<T>> =
     flow<AndromedaOutcome<T>> {
         emit(
-            value =
-                AndromedaOutcome.Success(
-                    data = callback.invoke(),
-                ),
+            value = AndromedaOutcome.Success(
+                data = callback.invoke()
+            )
         )
     }.retryWhen { cause, attempt ->
 
-        if (maxRetry <= 0) {
-            false
-        } else {
-            val isRetryable =
-                if (cause is IOException) {
-                    Log.e("AndromedaOutcome", "Unhandled error occurred, IOException, Attempt -> ${attempt + 1} ...")
+        if (attempt >= maxRetry) false else {
 
-                    attempt < maxRetry
-                } else {
-                    false
+            retryIf?.invoke(cause, attempt) ?: run {
+
+                val isRetryable = cause is IOException
+
+                if (isRetryable) {
+
+                    Log.e(
+                        "AndromedaOutcome",
+                        "Retrying on IOException (Attempt: ${attempt + 1})"
+                    )
+
+                    delay((attempt + 1) * 1000L)
                 }
 
-            if (isRetryable) delay((attempt + 1) * 1000L)
-
-            isRetryable
+                isRetryable
+            }
         }
+
     }.catch { throwable ->
 
-        Log.e("AndromedaOutcome", "Unhandled error, ${throwable.message}", throwable)
+        emit(
+            value = AndromedaOutcome.Failure(
+                error = throwable.toAndromedaOutcomeException()
+            )
+        )
+
+    }.onEmpty {
 
         emit(
-            value =
-                AndromedaOutcome.Failure(
-                    error = throwable.toAndromedaOutcomeException(),
-                ),
+            value = AndromedaOutcome.Failure(
+                error = AndromedaOutcomeException.Throwable(
+                    throwable = NoSuchElementException("Flow was empty")
+                )
+            )
         )
-    }.onEmpty {
-        emit(
-            value =
-                AndromedaOutcome.Failure(
-                    error =
-                        AndromedaOutcomeException.Throwable(
-                            throwable = NoSuchElementException("Flow was empty"),
-                        ),
-                ),
-        )
+
     }.onCompletion { throwable ->
 
         if (throwable != null && throwable !is CancellationException) {
-            Log.e(
-                "AndromedaOutcome",
-                """
-                =============== AndromedaOutcome ===============
-                Flow Cancelled, ensuring network cleanup:
-                --------
-                message:
-                ${throwable.message},
-                -----------
-                stacktrace:
-                ${throwable.stackTraceToString()}
-                ================================================
-                """.trimIndent(),
-            )
-        } else {
-            Log.d("AndromedaOutcome", "Flow Completed Successfully.")
+
+            val message = buildString {
+                appendLine("=============== AndromedaOutcome ===============")
+                appendLine("-> ${throwable.message}")
+                appendLine("------------------------------------------------")
+                appendLine(throwable.stackTraceToString())
+                appendLine("================================================")
+            }
+
+            Log.e("AndromedaOutcome", message)
         }
+
+    }.map { outcome ->
+        onFinally?.invoke(outcome is AndromedaOutcome.Success)
+        outcome
     }

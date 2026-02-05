@@ -3,9 +3,10 @@
 package andromeda.crypto
 
 import android.security.keystore.KeyProperties
+import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
-import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.GCMParameterSpec
 
 // @formatter:off // TODO: Do not remove this line to preserve the code style ----------------------
 
@@ -24,45 +25,64 @@ import javax.crypto.spec.IvParameterSpec
  * 4. Decrypt incoming message: `Encryption.decryptAes(encryptedBytes)`
  */
 object AndromedaAES {
+
     private const val USER_AUTHENTICATION_REQUIRED = false // Set true if you want biometric prompt
 
     const val KEY_ALIAS = "ir.farsroidx.andromeda.aes_key"
     const val ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
-    const val BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC
-    const val PADDING = KeyProperties.ENCRYPTION_PADDING_PKCS7
+    const val BLOCK_MODE = KeyProperties.BLOCK_MODE_GCM
+    const val PADDING = KeyProperties.ENCRYPTION_PADDING_NONE
     const val TRANSFORMATION = "$ALGORITHM/$BLOCK_MODE/$PADDING"
     const val KEY_SIZE = 256
+    const val IV_SIZE =  12
+    const val TAG_SIZE = 128
 
-    fun isKeyAvailable(): Boolean = AndromedaKeyStore.isKeyAvailable(KEY_ALIAS)
-
-    fun getSecretKey(): SecretKey =
-        AndromedaKeyStore.getSecretKey(KEY_ALIAS)
-            ?: AndromedaKeyStore.initSecretKey(
+    fun getSecretKey(identifier: String? = null): SecretKey {
+        return AndromedaKeyStore.getSecretKey(alias = getAliasKey(identifier))
+            ?: AndromedaKeyStore.initAesSecretKey(
                 size = KEY_SIZE,
-                alias = KEY_ALIAS,
+                alias = getAliasKey(identifier),
                 padding = PADDING,
                 algorithm = ALGORITHM,
                 blockMode = BLOCK_MODE,
                 authRequired = USER_AUTHENTICATION_REQUIRED,
             )
-
-    fun encrypt(bytes: ByteArray): ByteArray {
-        val cipher = AndromedaCipher.instance(TRANSFORMATION)
-        cipher.init(Cipher.ENCRYPT_MODE, getSecretKey())
-        return cipher.iv + cipher.doFinal(bytes)
     }
 
-    fun decrypt(bytes: ByteArray): ByteArray {
-        val cipher = AndromedaCipher.instance(TRANSFORMATION)
-        val ivSize = cipher.blockSize
-        if (bytes.size <= ivSize) throw IllegalArgumentException("Invalid or corrupted encrypted data")
-        val iv = bytes.copyOfRange(0, ivSize)
-        val encryptedData = bytes.copyOfRange(ivSize, bytes.size)
-        cipher.init(Cipher.DECRYPT_MODE, getSecretKey(), IvParameterSpec(iv))
-        return cipher.doFinal(encryptedData)
+    fun encrypt(data: ByteArray): ByteArray {
+        val cipher = Cipher.getInstance(TRANSFORMATION)
+        val iv = ByteArray(IV_SIZE).also { SecureRandom().nextBytes(it) }
+        val spec = GCMParameterSpec(TAG_SIZE, iv)
+        cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(), spec)
+        val encrypted = cipher.doFinal(data)
+        // output = IV || CIPHERTEXT || TAG
+        return iv + encrypted
     }
 
-    fun deleteKey() {
-        if (isKeyAvailable()) AndromedaKeyStore.deleteKey(KEY_ALIAS)
+    fun decrypt(data: ByteArray): ByteArray {
+        if (data.size <= IV_SIZE) { throw IllegalArgumentException("Invalid encrypted data") }
+        val iv = data.copyOfRange(0, IV_SIZE)
+        val encrypted = data.copyOfRange(IV_SIZE, data.size)
+        val cipher = Cipher.getInstance(TRANSFORMATION)
+        val spec = GCMParameterSpec(TAG_SIZE, iv)
+        cipher.init(Cipher.DECRYPT_MODE, getSecretKey(), spec)
+        return cipher.doFinal(encrypted)
+    }
+
+    fun deleteKey(identifier: String? = null) =
+        AndromedaKeyStore.deleteKey(alias = getAliasKey(identifier))
+
+    fun deleteKeys() {
+
+        AndromedaKeyStore.getAliases().forEach {
+
+            if (it.startsWith(prefix = KEY_ALIAS)) {
+                AndromedaKeyStore.deleteKey(alias = it)
+            }
+        }
+    }
+
+    private fun getAliasKey(identifier: String? = null): String {
+        return if (identifier == null) KEY_ALIAS else "${KEY_ALIAS}.$identifier"
     }
 }

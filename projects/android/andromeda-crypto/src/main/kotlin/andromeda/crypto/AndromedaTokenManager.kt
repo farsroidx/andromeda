@@ -23,7 +23,7 @@ object AndromedaTokenManager {
 
     private fun getSecretKey(): SecretKey =
         AndromedaKeyStore.getSecretKey(KEY_ALIAS)
-            ?: AndromedaKeyStore.initSecretKey(
+            ?: AndromedaKeyStore.initAesSecretKey(
                 size = KEY_SIZE,
                 alias = KEY_ALIAS,
                 padding = PADDING,
@@ -33,13 +33,13 @@ object AndromedaTokenManager {
             )
 
     fun encrypt(token: String): ByteArray {
-        val cipher = AndromedaCipher.instance(TRANSFORMATION)
+        val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, getSecretKey())
         return cipher.iv + cipher.doFinal(token.toByteArray())
     }
 
     fun decrypt(encryptedToken: ByteArray): String {
-        val cipher = AndromedaCipher.instance(TRANSFORMATION)
+        val cipher = Cipher.getInstance(TRANSFORMATION)
         val ivSize = cipher.blockSize
         if (encryptedToken.size <= ivSize) throw IllegalArgumentException("Invalid or corrupted token")
         val iv = encryptedToken.copyOfRange(0, ivSize)
