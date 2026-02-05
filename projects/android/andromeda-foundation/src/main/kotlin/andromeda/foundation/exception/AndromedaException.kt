@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package andromeda.foundation
+package andromeda.foundation.exception
 
 // @formatter:off // TODO: Do not remove this line to preserve the code style ----------------------
 
@@ -12,6 +12,7 @@ package andromeda.foundation
  * @property cause The underlying [Throwable] that caused the exception.
  */
 class AndromedaException : RuntimeException {
+
     /**
      * Default constructor with no message or cause.
      */

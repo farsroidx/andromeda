@@ -18,7 +18,7 @@ allprojects {
 
     group = "ir.farsroidx"
 
-    version = "2026.02.04"
+    version = "2026.02.05"
 
 }
 

@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.andromeda.publishing)
 }
 
-version = "2.2.2"
+version = "3.0.0"
 
 android {
 
