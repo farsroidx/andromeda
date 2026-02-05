@@ -40,14 +40,14 @@ object AndromedaRSA {
         }
     }
 
+    private fun getPrivateKey(identifier: String? = null): PrivateKey {
+        initKeyPair(identifier)
+        return AndromedaKeyStore.getPrivateKey(alias = getAliasKey(identifier))!!
+    }
+
     fun getPublicKey(identifier: String? = null): PublicKey {
         initKeyPair(identifier)
         return AndromedaKeyStore.getPublicKey(alias = getAliasKey(identifier))!!
-    }
-
-    fun getPrivateKey(identifier: String? = null): PrivateKey {
-        initKeyPair(identifier)
-        return AndromedaKeyStore.getPrivateKey(alias = getAliasKey(identifier))!!
     }
 
     fun getPublicKeyBase64(identifier: String? = null): String =
