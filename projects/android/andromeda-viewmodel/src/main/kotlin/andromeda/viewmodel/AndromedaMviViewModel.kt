@@ -2,17 +2,21 @@
 
 package andromeda.viewmodel
 
+import android.util.Log
 import andromeda.viewmodel.dispatcher.AndromedaDispatcherProvider
 import andromeda.viewmodel.dispatcher.AndromedaDispatcherProviderImpl
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ClosedSendChannelException
+import kotlinx.coroutines.channels.onFailure
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import andromeda.viewmodel.contract.AndromedaUiAction as UiAction
 import andromeda.viewmodel.contract.AndromedaUiEffect as UiEffect
 import andromeda.viewmodel.contract.AndromedaUiIntent as UiIntent
@@ -338,17 +342,18 @@ abstract class AndromedaMviViewModel<S : UiState, I : UiIntent, A : UiAction, E 
      *
      * Effects must **never** be part of the UI state.
      */
-    private val _uiEffects: MutableSharedFlow<E> =
-        MutableSharedFlow(
-            replay = 0,
-            extraBufferCapacity = 1,
-            onBufferOverflow = BufferOverflow.DROP_OLDEST,
-        )
+    private val _uiEffects = Channel<E>(
+        capacity = Channel.BUFFERED,
+        onBufferOverflow = BufferOverflow.SUSPEND,
+        onUndeliveredElement = {
+            Log.w("AndromedaMviViewModel", "Undelivered: $it")
+        }
+    )
 
     /**
      * Public immutable stream of UI effects.
      */
-    val uiEffects: Flow<E> = _uiEffects.asSharedFlow()
+    val uiEffects: Flow<E> = _uiEffects.receiveAsFlow()
 
     /**
      * Emits a one-time UI effect.
@@ -360,6 +365,38 @@ abstract class AndromedaMviViewModel<S : UiState, I : UiIntent, A : UiAction, E 
      * ```
      */
     protected fun sendEffect(block: () -> E) {
-        ioLaunch { _uiEffects.emit(value = block.invoke()) }
+        ioLaunch {
+            try {
+                _uiEffects.send(block.invoke())
+            } catch (ex: ClosedSendChannelException) {
+                Log.d("AndromedaMviViewModel", "Channel closed, ignoring effect: ${ex.message}")
+            } catch (ex: Exception) {
+                if (ex !is CancellationException) {
+                    Log.e("AndromedaMviViewModel", "Error sending effect", ex)
+                }
+            }
+        }
+    }
+
+    /**
+     * Emits a one-time UI effect fast.
+     *
+     * Example:
+     * ```
+     * tryEffect { HomeEffect.ShowError }
+     * tryEffect { HomeEffect.NavigateToDetails(id) }
+     * ```
+     */
+    protected fun tryEffect(block: () -> E) {
+        ioLaunch {
+            _uiEffects.trySend(block.invoke())
+                .onFailure { ex ->
+                    if (ex is ClosedSendChannelException) {
+                        Log.d("AndromedaMviViewModel", "Channel closed, ignoring effect: ${ex.message}")
+                    } else {
+                        Log.e("AndromedaMviViewModel", "Error sending effect", ex)
+                    }
+                }
+        }
     }
 }
