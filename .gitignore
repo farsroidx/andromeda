@@ -6,7 +6,9 @@
 .test/
 build/
 captures/
+keys/
 
+*.asc
 *.aab
 *.apk
 *.asc
