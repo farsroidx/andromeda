@@ -106,9 +106,8 @@ abstract class AndromedaMvvmViewModel<S : ViewState, E : ViewEvent>(
      * @param block A transformation function that takes the current state
      * and returns the new state.
      */
-    protected suspend fun updateState(block: S.() -> S) {
+    protected suspend fun updateState(block: suspend S.() -> S) {
         val newState = defaultContext { _viewState.value.block() }
-
         mainContext { _viewState.value = newState }
     }
 
@@ -125,7 +124,7 @@ abstract class AndromedaMvvmViewModel<S : ViewState, E : ViewEvent>(
      *
      * @param block A lambda returning the event to emit.
      */
-    protected fun sendEvent(block: () -> E) {
+    protected fun sendEvent(block: suspend () -> E) {
         ioLaunch { _viewEvent.emit(block.invoke()) }
     }
 

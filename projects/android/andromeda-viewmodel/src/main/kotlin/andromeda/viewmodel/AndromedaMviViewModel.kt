@@ -194,9 +194,8 @@ abstract class AndromedaMviViewModel<S : UiState, I : UiIntent, A : UiAction, E 
      * updateState { copy(isLoading = true) }
      * ```
      */
-    protected suspend fun updateState(block: S.() -> S) {
+    protected suspend fun updateState(block: suspend S.() -> S) {
         val newState = defaultContext { _uiState.value.block() }
-
         mainContext { _uiState.value = newState }
     }
 
@@ -364,7 +363,7 @@ abstract class AndromedaMviViewModel<S : UiState, I : UiIntent, A : UiAction, E 
      * sendEffect { HomeEffect.NavigateToDetails(id) }
      * ```
      */
-    protected fun sendEffect(block: () -> E) {
+    protected fun sendEffect(block: suspend () -> E) {
         ioLaunch {
             try {
                 _uiEffects.send(block.invoke())
@@ -387,7 +386,7 @@ abstract class AndromedaMviViewModel<S : UiState, I : UiIntent, A : UiAction, E 
      * tryEffect { HomeEffect.NavigateToDetails(id) }
      * ```
      */
-    protected fun tryEffect(block: () -> E) {
+    protected fun tryEffect(block: suspend () -> E) {
         ioLaunch {
             _uiEffects.trySend(block.invoke())
                 .onFailure { ex ->
