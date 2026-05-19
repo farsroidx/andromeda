@@ -15,7 +15,6 @@ package andromeda.foundation.exception
  * (e.g. AUTH_EXPIRED, NETWORK, RSA_DECRYPT_FAILED).
  */
 class AndromedaCodeException : RuntimeException {
-
     /**
      * A stable error code that can be used by the UI layer
      * to decide how to present the error.
@@ -58,8 +57,8 @@ class AndromedaCodeException : RuntimeException {
      * @param message A detailed message for logging or debugging purposes.
      * @param cause The original throwable that caused this exception.
      */
-    constructor(code: String, message: String? = null, cause: Throwable? = null)
-        : super(message, cause) {
-            this.code = code
-        }
+    constructor(code: String, message: String? = null, cause: Throwable? = null) :
+        super(message, cause) {
+        this.code = code
+    }
 }

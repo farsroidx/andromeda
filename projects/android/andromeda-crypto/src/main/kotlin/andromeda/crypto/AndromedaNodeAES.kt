@@ -23,7 +23,6 @@ private val Context.dataStore by preferencesDataStore(name = "aes_prefs")
  * This object handles secondary encryption of the server key before storing it in DataStore.
  */
 object AndromedaNodeAES {
-
     /**
      * Encrypts and persists the decrypted AES key received from the server.
      *
@@ -31,8 +30,11 @@ object AndromedaNodeAES {
      * @param aesKey The raw (already decrypted via RSA) AES key bytes.
      * @param identifier Optional unique identifier for the account/session.
      */
-    suspend fun setAesKey(context: Context, aesKey: ByteArray, identifier: String? = null) {
-
+    suspend fun setAesKey(
+        context: Context,
+        aesKey: ByteArray,
+        identifier: String? = null,
+    ) {
         val cipher = Cipher.getInstance(AndromedaAES.TRANSFORMATION)
 
         // We use the Local AndroidKeyStore AES key to encrypt the Server's AES key
@@ -54,8 +56,10 @@ object AndromedaNodeAES {
      * @param identifier Optional unique identifier for the account/session.
      * @return The decrypted [SecretKey] ready for data encryption/decryption.
      */
-    private suspend fun getServerKey(context: Context, identifier: String? = null): SecretKey? {
-
+    private suspend fun getServerKey(
+        context: Context,
+        identifier: String? = null,
+    ): SecretKey? {
         val encoded = context.dataStore.data.first()[getPrefKey(identifier)] ?: return null
 
         val combined = AndromedaBase64.decode(encoded)
@@ -78,10 +82,14 @@ object AndromedaNodeAES {
         return SecretKeySpec(keyBytes, AndromedaAES.ALGORITHM)
     }
 
-    suspend fun encrypt(context: Context, data: ByteArray, identifier: String? = null): ByteArray {
-
-        val aesKey = getServerKey(context, identifier)
-            ?: throw IllegalStateException("Server AES key not found. Perform key exchange first.")
+    suspend fun encrypt(
+        context: Context,
+        data: ByteArray,
+        identifier: String? = null,
+    ): ByteArray {
+        val aesKey =
+            getServerKey(context, identifier)
+                ?: throw IllegalStateException("Server AES key not found. Perform key exchange first.")
 
         val iv = ByteArray(AndromedaAES.IV_SIZE).also { SecureRandom().nextBytes(it) }
         val gcmSpec = GCMParameterSpec(AndromedaAES.TAG_SIZE, iv)
@@ -94,13 +102,18 @@ object AndromedaNodeAES {
         return iv + encrypted
     }
 
-    suspend fun decrypt(context: Context, data: ByteArray, identifier: String? = null): ByteArray {
+    suspend fun decrypt(
+        context: Context,
+        data: ByteArray,
+        identifier: String? = null,
+    ): ByteArray {
+        val aesKey =
+            getServerKey(context, identifier)
+                ?: throw IllegalStateException("Server AES key not found.")
 
-        val aesKey = getServerKey(context, identifier)
-            ?: throw IllegalStateException("Server AES key not found.")
-
-        if (data.size <= AndromedaAES.IV_SIZE)
+        if (data.size <= AndromedaAES.IV_SIZE) {
             throw IllegalArgumentException("Payload too short to contain IV")
+        }
 
         val iv = data.copyOfRange(0, AndromedaAES.IV_SIZE)
         val encryptedData = data.copyOfRange(AndromedaAES.IV_SIZE, data.size)
@@ -112,9 +125,8 @@ object AndromedaNodeAES {
         return cipher.doFinal(encryptedData)
     }
 
-    private fun getPrefKey(identifier: String? = null): Preferences.Key<String> {
-        return stringPreferencesKey(
-            name = if (identifier == null) "SERVER_AES_KEY" else "SERVER_AES_KEY.$identifier"
+    private fun getPrefKey(identifier: String? = null): Preferences.Key<String> =
+        stringPreferencesKey(
+            name = if (identifier == null) "SERVER_AES_KEY" else "SERVER_AES_KEY.$identifier",
         )
-    }
 }

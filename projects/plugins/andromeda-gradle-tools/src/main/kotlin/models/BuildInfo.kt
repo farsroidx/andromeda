@@ -1,7 +1,5 @@
 package models
 
-import com.android.builder.model.BuildType
-
 /**
  * Data class to store detailed build information for APK output.
  *
@@ -10,7 +8,6 @@ import com.android.builder.model.BuildType
  *
  * @property appId The application ID (package name) of the variant (e.g., "com.example.app")
  * @property appName The app name extracted from the resources (strings.xml)
- * @property appDesc Optional description of the variant (from variant description)
  * @property dirName The build directory name for this variant (e.g., "release", "debug")
  * @property flavorName The product flavor name (empty string if no flavor)
  * @property variantName Full variant name (combination of flavor + build type, e.g., "demoRelease")
@@ -21,11 +18,10 @@ import com.android.builder.model.BuildType
 data class BuildInfo(
     val appId: String,
     val appName: String,
-    val appDesc: String,
     val dirName: String,
     val flavorName: String,
     val variantName: String,
     val versionName: String,
     val versionCode: Int,
-    val buildType: BuildType,
+    val buildType: String,
 )

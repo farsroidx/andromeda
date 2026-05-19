@@ -17,7 +17,7 @@ gradlePlugin {
 dependencies {
 
     //noinspection UseTomlInstead
-    compileOnly("com.android.tools.build:gradle:9.0.1")
+    compileOnly("com.android.tools.build:gradle:9.2.1")
 
     compileOnly(gradleApi())
 }

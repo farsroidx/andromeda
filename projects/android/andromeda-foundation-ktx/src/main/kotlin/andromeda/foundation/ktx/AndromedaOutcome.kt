@@ -93,21 +93,21 @@ suspend fun <T> AndromedaOutcome<T>.onFailure(callback: suspend (AndromedaOutcom
  *
  * @return A [AndromedaOutcomeException.Throwable] wrapping the original exception.
  */
-fun Throwable.toAndromedaOutcomeException(): AndromedaOutcomeException {
-    return AndromedaOutcomeException.Throwable(throwable = this).also { throwable ->
-        val message = buildString {
-            appendLine("===================== AndromedaOutcomeException =====================")
-            appendLine("-> Code      : ${throwable.code}")
-            appendLine("-> ErrorId   : ${throwable.errorId}")
-            appendLine("-> Message   : ${throwable.message}")
-            appendLine("-> Timestamp : ${throwable.timestamp}")
-            appendLine("---------------------------------------------------------------------")
-            appendLine(throwable.throwable.stackTraceToString())
-            appendLine("=====================================================================")
-        }
+fun Throwable.toAndromedaOutcomeException(): AndromedaOutcomeException =
+    AndromedaOutcomeException.Throwable(throwable = this).also { throwable ->
+        val message =
+            buildString {
+                appendLine("===================== AndromedaOutcomeException =====================")
+                appendLine("-> Code      : ${throwable.code}")
+                appendLine("-> ErrorId   : ${throwable.errorId}")
+                appendLine("-> Message   : ${throwable.message}")
+                appendLine("-> Timestamp : ${throwable.timestamp}")
+                appendLine("---------------------------------------------------------------------")
+                appendLine(throwable.throwable.stackTraceToString())
+                appendLine("=====================================================================")
+            }
         Log.e("Andromeda", message)
     }
-}
 
 /**
  * Executes a suspending [callback] and returns a [Flow] that emits a single [AndromedaOutcome] value
@@ -198,23 +198,23 @@ fun <T> runCatchingOutcome(
 ): Flow<AndromedaOutcome<T>> =
     flow<AndromedaOutcome<T>> {
         emit(
-            value = AndromedaOutcome.Success(
-                data = callback.invoke()
-            )
+            value =
+                AndromedaOutcome.Success(
+                    data = callback.invoke(),
+                ),
         )
     }.retryWhen { cause, attempt ->
 
-        if (attempt >= maxRetry) false else {
-
+        if (attempt >= maxRetry) {
+            false
+        } else {
             retryIf?.invoke(cause, attempt) ?: run {
-
                 val isRetryable = cause is IOException
 
                 if (isRetryable) {
-
                     Log.e(
                         "AndromedaOutcome",
-                        "Retrying on IOException (Attempt: ${attempt + 1})"
+                        "Retrying on IOException (Attempt: ${attempt + 1})",
                     )
 
                     delay((attempt + 1) * 1000L)
@@ -223,40 +223,38 @@ fun <T> runCatchingOutcome(
                 isRetryable
             }
         }
-
     }.catch { throwable ->
 
         emit(
-            value = AndromedaOutcome.Failure(
-                error = throwable.toAndromedaOutcomeException()
-            )
+            value =
+                AndromedaOutcome.Failure(
+                    error = throwable.toAndromedaOutcomeException(),
+                ),
         )
-
     }.onEmpty {
-
         emit(
-            value = AndromedaOutcome.Failure(
-                error = AndromedaOutcomeException.Throwable(
-                    throwable = NoSuchElementException("Flow was empty")
-                )
-            )
+            value =
+                AndromedaOutcome.Failure(
+                    error =
+                        AndromedaOutcomeException.Throwable(
+                            throwable = NoSuchElementException("Flow was empty"),
+                        ),
+                ),
         )
-
     }.onCompletion { throwable ->
 
         if (throwable != null && throwable !is CancellationException) {
-
-            val message = buildString {
-                appendLine("=============== AndromedaOutcome ===============")
-                appendLine("-> ${throwable.message}")
-                appendLine("------------------------------------------------")
-                appendLine(throwable.stackTraceToString())
-                appendLine("================================================")
-            }
+            val message =
+                buildString {
+                    appendLine("=============== AndromedaOutcome ===============")
+                    appendLine("-> ${throwable.message}")
+                    appendLine("------------------------------------------------")
+                    appendLine(throwable.stackTraceToString())
+                    appendLine("================================================")
+                }
 
             Log.e("Andromeda", message)
         }
-
     }.map { outcome ->
         onFinally?.invoke(outcome is AndromedaOutcome.Success)
         outcome

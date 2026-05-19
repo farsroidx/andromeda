@@ -1,9 +1,9 @@
 @file:Suppress("unused")
 
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.ApplicationVariant
 import models.BuildInfo
 import org.gradle.api.Project
-import org.gradle.api.tasks.TaskProvider
 import org.w3c.dom.Element
 import org.xml.sax.SAXException
 import java.io.File
@@ -27,7 +27,7 @@ import javax.xml.parsers.ParserConfigurationException
  *
  *     // Application [1.0.0]
  *
- *     outputCraft { "${it.appName} [${it.versionName}]" }
+ *     renameOutput { "${it.appName} [${it.versionName}]" }
  *
  * }
  *
@@ -58,70 +58,76 @@ open class AndromedaExtension(
      * @param resourceFilePath The relative path to the strings.xml file containing the app name.
      * @param callback A lambda that generates the final APK name using the [models.BuildInfo] data model.
      */
-    fun outputCraft(
+    fun renameOutput(
         onlyInRelease: Boolean = true,
         resourceFieldName: String = "app_name",
         resourceFilePath: String = "src/main/res/values/strings.xml",
         callback: (BuildInfo) -> String = { info -> "${info.appName} [${info.versionName}]" },
     ) {
-        // Locate the Android Gradle Plugin extension
-        val androidExt =
-            project.extensions.findByType(BaseAppModuleExtension::class.java)
-                ?: error("BaseAppModuleExtension not found")
+        project.pluginManager.withPlugin("com.android.application") {
+            // Locate the Android Gradle Plugin extension
+            val androidComponents =
+                project.extensions.findByType(AndroidComponentsExtension::class.java)
+                    ?: error("AndroidComponentsExtension not found!")
 
-        // Iterate through all Android build variants (e.g., debug, release)
-        androidExt.applicationVariants.all appVariant@{ variant ->
+            // Iterate through all Android build variants (e.g., debug, release)
+            androidComponents.onVariants { variant ->
 
-            val isReleaseMode = !variant.buildType.isDebuggable
+                if (variant !is ApplicationVariant) return@onVariants
 
-            // Skip variants that are not release builds when onlyInRelease = true
-            if (onlyInRelease && !isReleaseMode) return@appVariant
+                val isReleaseMode = variant.buildType?.lowercase() == "release"
 
-            // Iterate through all outputs (APKs) for the current variant
-            variant.outputs.all { baseVariantOutput ->
+                if (onlyInRelease && !isReleaseMode) return@onVariants
 
-                // Generate task name based on variant (PascalCase)
                 val taskName =
-                    variant.name.replaceFirstChar { ch ->
-                        if (ch.isLowerCase()) ch.titlecase(Locale.getDefault()) else ch.toString()
+                    variant.name.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
                     }
 
                 val newTaskName = "renameApkAfter$taskName"
 
-                // Register a new Gradle task responsible for renaming the APK after assembly
-                val renameTask: TaskProvider<*> =
+                val flavorName = variant.flavorName ?: ""
+                val buildType = variant.buildType ?: ""
+                val variantName = variant.name
+
+                val appIdProvider = variant.applicationId
+                val mainOutput = variant.outputs.first()
+                val versionNameProvider = mainOutput.versionName
+                val versionCodeProvider = mainOutput.versionCode
+
+                val renameTask =
                     project.tasks.register(newTaskName) { task ->
 
                         task.doLast {
-                            val apkFile = baseVariantOutput.outputFile
+                            val applicationId = appIdProvider.get()
+                            val versionName = versionNameProvider.orNull ?: "unknown"
+                            val versionCode = versionCodeProvider.orNull ?: 0
 
-                            // Skip if no APK is generated
-                            if (!apkFile.exists()) return@doLast
+                            val buildDir =
+                                project.layout.buildDirectory
+                                    .get()
+                                    .asFile
 
-                            // Extract the app name from the specified strings.xml resource file
+                            val apkDir = File(buildDir.parent, "${flavorName.let { if (it.isEmpty()) "" else "$it/" }}$buildType")
+
+                            if (!apkDir.exists()) return@doLast
+
+                            val apkFile =
+                                apkDir.listFiles()?.firstOrNull { it.name.endsWith(".apk") }
+                                    ?: return@doLast
+
                             val appName =
                                 try {
                                     val file = project.file(resourceFilePath)
-                                    if (!file.exists()) {
-                                        throw IllegalAccessException("The resource file '$resourceFilePath' not found.")
-                                    }
-
-                                    val doc =
-                                        DocumentBuilderFactory
-                                            .newInstance()
-                                            .newDocumentBuilder()
-                                            .parse(file)
-
+                                    if (!file.exists()) throw IllegalAccessException("File not found.")
+                                    val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
                                     doc.documentElement.normalize()
                                     val strings = doc.getElementsByTagName("string")
-
-                                    // Find the element matching the desired name attribute
                                     (0 until strings.length)
-                                        .map { index -> strings.item(index) }
+                                        .map { strings.item(it) }
                                         .filterIsInstance<Element>()
-                                        .firstOrNull { element ->
-                                            element.getAttribute("name") == resourceFieldName
-                                        }?.textContent ?: "app-${variant.name}"
+                                        .firstOrNull { it.getAttribute("name") == resourceFieldName }
+                                        ?.textContent ?: "app-$variantName"
                                 } catch (e: ParserConfigurationException) {
                                     println("⚠️ Parser configuration error: ${e.message}")
                                     "app-${variant.name}"
@@ -131,49 +137,72 @@ open class AndromedaExtension(
                                 } catch (e: IOException) {
                                     println("⚠️ IO error reading file '$resourceFilePath': ${e.message}")
                                     "app-${variant.name}"
+                                } catch (e: Exception) {
+                                    "app-$variantName"
                                 }
 
-                            // Build structured info model for this variant
                             val buildInfo =
                                 BuildInfo(
-                                    appId = variant.applicationId, // Application ID (package)
-                                    appName = appName, // Extracted name from resources
-                                    appDesc = variant.description, // Optional variant description
-                                    dirName = variant.dirName, // Output directory name
-                                    flavorName = variant.flavorName, // Product flavor (if used)
-                                    variantName =
-                                        variant.name
-                                            ?: "unknown",
-                                    // Full variant identifier
-                                    versionName =
-                                        variant.versionName
-                                            ?: "unknown",
-                                    // Version name from Gradle config
-                                    versionCode = variant.versionCode, // Version code
-                                    buildType = variant.buildType, // Build type instance
+                                    appId = applicationId,
+                                    appName = appName,
+                                    dirName = apkDir.name,
+                                    flavorName = flavorName,
+                                    variantName = variantName,
+                                    versionName = versionName,
+                                    versionCode = versionCode,
+                                    buildType = buildType,
                                 )
 
-                            // Generate new file name using the provided callback
                             val newName = "${callback(buildInfo)}.apk"
-                            val newFile = File(apkFile.parentFile, newName)
 
-                            // Rename the APK file
+                            val newFile = File(apkDir, newName)
+
                             apkFile.renameTo(newFile)
 
-                            val buildDir = newFile.parentFile.absolutePath
+                            val userHome = System.getProperty("user.home")
+                            val desktopDir = File(userHome, "Desktop")
+
+                            val desktopApkFile = File(desktopDir, newFile.name)
+
+                            if (newFile.exists()) {
+                                newFile.copyTo(desktopApkFile, overwrite = true)
+                            }
+
+                            val releaseFolderLink =
+                                "file:///" +
+                                    newFile.parentFile.absolutePath
+                                        .replace("\\", "/")
+                                        .replace(" ", "%20")
+
+                            val desktopFolderLink =
+                                "file:///" +
+                                    desktopApkFile.parentFile.absolutePath
+                                        .replace("\\", "/")
+                                        .replace(" ", "%20")
 
                             // Print a clearly formatted, clickable summary in the Gradle console
                             project.logger.lifecycle("----------------------------------------------------------------------")
-                            project.logger.lifecycle("📦 APK Successfully Generated.")
-                            project.logger.lifecycle("📁 Output Directory: $buildDir")
-                            project.logger.lifecycle("🏷️ APK File Name: ${newFile.name}")
+
+                            project.logger.lifecycle(
+                                """
+                                📦 APK $BRIGHT_BLUE( ${newFile.name} )$RESET Successfully Generated & Renamed! 😎
+                                """.trimIndent(),
+                            )
+                            project.logger.lifecycle("📁️ Release Folder: $releaseFolderLink")
+                            project.logger.lifecycle("📁 Desktop Folder: $desktopFolderLink")
+
+//                            project.logger.lifecycle("📁 Output Directory: $iBuildDir")
+//                            project.logger.lifecycle("🔗 Desktop APK: $desktopApkLink")
+//                            project.logger.lifecycle("🏷️ APK File Name: $iBuildDir\\${newFile.name}")
+//                            project.logger.lifecycle("🎉 APK File Name: $desktopDir\\${newFile.name}")
                             project.logger.lifecycle("----------------------------------------------------------------------")
                         }
                     }
 
-                // Ensure rename task runs after the variant's assemble task completes
-                project.tasks.named("assemble$taskName").configure { task ->
-                    task.finalizedBy(renameTask)
+                project.tasks.whenTaskAdded { task ->
+                    if (task.name == "assemble$taskName") {
+                        task.finalizedBy(renameTask)
+                    }
                 }
             }
         }

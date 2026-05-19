@@ -53,7 +53,7 @@ kotlin {
         freeCompilerArgs.addAll(
             "-Xcontext-parameters",
             "-Xannotation-default-target=param-property",
-            "-Xexplicit-backing-fields"
+            "-Xexplicit-backing-fields",
         )
     }
 }
@@ -64,7 +64,7 @@ dependencies {
     api(projects.android.andromedaUiCore)
 
     // Compose
-    implementation( platform( libs.compose.bom ) )
+    implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
     debugApi(libs.compose.ui.tooling)
 

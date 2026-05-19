@@ -84,7 +84,6 @@ import java.util.concurrent.atomic.AtomicLong
  * @see [UiEvent]
  */
 object UiEventManager {
-
     private var debugEnabled: Boolean = true
 
     private val scope by lazy {
@@ -125,9 +124,10 @@ object UiEventManager {
         type: UiEventType = UiEventType.NONE,
         duration: Long = UiEvent.Notification.DEFAULT_DURATION,
         autoDismiss: Boolean = true,
-        isForce: Boolean = false
+        isForce: Boolean = false,
     ) = emitNotification(
-        UiEvent.Notification.Info(title, message, type, metadata, duration, autoDismiss), isForce
+        UiEvent.Notification.Info(title, message, type, metadata, duration, autoDismiss),
+        isForce,
     )
 
     /**
@@ -142,9 +142,10 @@ object UiEventManager {
         type: UiEventType = UiEventType.NONE,
         duration: Long = UiEvent.Notification.DEFAULT_DURATION,
         autoDismiss: Boolean = true,
-        isForce: Boolean = false
+        isForce: Boolean = false,
     ) = emitNotification(
-        UiEvent.Notification.Success(title, message, type, metadata, duration, autoDismiss), isForce
+        UiEvent.Notification.Success(title, message, type, metadata, duration, autoDismiss),
+        isForce,
     )
 
     /**
@@ -159,9 +160,10 @@ object UiEventManager {
         type: UiEventType = UiEventType.NONE,
         duration: Long = UiEvent.Notification.DEFAULT_DURATION,
         autoDismiss: Boolean = true,
-        isForce: Boolean = false
+        isForce: Boolean = false,
     ) = emitNotification(
-        UiEvent.Notification.Warning(title, message, type, metadata, duration, autoDismiss), isForce
+        UiEvent.Notification.Warning(title, message, type, metadata, duration, autoDismiss),
+        isForce,
     )
 
     /**
@@ -176,9 +178,10 @@ object UiEventManager {
         type: UiEventType = UiEventType.NONE,
         duration: Long = UiEvent.Notification.DEFAULT_DURATION,
         autoDismiss: Boolean = true,
-        isForce: Boolean = false
+        isForce: Boolean = false,
     ) = emitNotification(
-        UiEvent.Notification.Error(title, message, type, metadata, duration, autoDismiss), isForce
+        UiEvent.Notification.Error(title, message, type, metadata, duration, autoDismiss),
+        isForce,
     )
 
     /**
@@ -195,12 +198,12 @@ object UiEventManager {
         type: UiEventType = UiEventType.NONE,
         duration: Long = UiEvent.Notification.DEFAULT_DURATION,
         autoDismiss: Boolean = true,
-        isForce: Boolean = false
+        isForce: Boolean = false,
     ) {
         if (!debugEnabled) return
         emitNotification(
             UiEvent.Notification.Debug(title, message, type, metadata, duration, autoDismiss),
-            isForce
+            isForce,
         )
     }
 
@@ -238,7 +241,6 @@ object UiEventManager {
      * - if the queue is not empty, the next notification may be shown later
      */
     fun clear(clearQueue: Boolean = false) {
-
         dismissJob?.cancel()
         dismissJob = null
 
@@ -259,8 +261,10 @@ object UiEventManager {
         }
     }
 
-    private fun emitNotification(notification: UiEvent.Notification, isForce: Boolean) {
-
+    private fun emitNotification(
+        notification: UiEvent.Notification,
+        isForce: Boolean,
+    ) {
         require(notification.duration >= 0L) { "duration must be >= 0" }
 
         if (isForce) {
@@ -277,7 +281,6 @@ object UiEventManager {
     }
 
     private fun showNotification(notification: UiEvent.Notification) {
-
         dismissJob?.cancel()
         transitionJob?.cancel()
 
@@ -288,19 +291,18 @@ object UiEventManager {
         dispatch(notification)
 
         if (notification.autoDismiss && notification.duration > 0L) {
-
             val token = currentToken
 
-            dismissJob = scope.launch {
-                delay(timeMillis = notification.duration)
-                if (!isActive || currentToken != token) return@launch
-                dismissCurrent()
-            }
+            dismissJob =
+                scope.launch {
+                    delay(timeMillis = notification.duration)
+                    if (!isActive || currentToken != token) return@launch
+                    dismissCurrent()
+                }
         }
     }
 
     private fun dismissCurrent() {
-
         dismissJob?.cancel()
         dismissJob = null
 
@@ -310,11 +312,12 @@ object UiEventManager {
         dispatch(UiEvent.DismissNotification)
 
         transitionJob?.cancel()
-        transitionJob = scope.launch {
-            delay(timeMillis = UiEvent.Notification.DISMISS_ANIMATION_DURATION)
-            if (!isActive || currentNotification != null) return@launch
-            showNextNotification()
-        }
+        transitionJob =
+            scope.launch {
+                delay(timeMillis = UiEvent.Notification.DISMISS_ANIMATION_DURATION)
+                if (!isActive || currentNotification != null) return@launch
+                showNextNotification()
+            }
     }
 
     private fun showNextNotification() {

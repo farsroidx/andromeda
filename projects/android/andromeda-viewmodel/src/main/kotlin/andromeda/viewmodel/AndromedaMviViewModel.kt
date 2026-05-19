@@ -341,13 +341,14 @@ abstract class AndromedaMviViewModel<S : UiState, I : UiIntent, A : UiAction, E 
      *
      * Effects must **never** be part of the UI state.
      */
-    private val _uiEffects = Channel<E>(
-        capacity = Channel.BUFFERED,
-        onBufferOverflow = BufferOverflow.SUSPEND,
-        onUndeliveredElement = {
-            Log.w("Andromeda", "Undelivered: $it")
-        }
-    )
+    private val _uiEffects =
+        Channel<E>(
+            capacity = Channel.BUFFERED,
+            onBufferOverflow = BufferOverflow.SUSPEND,
+            onUndeliveredElement = {
+                Log.w("Andromeda", "Undelivered: $it")
+            },
+        )
 
     /**
      * Public immutable stream of UI effects.
@@ -388,7 +389,8 @@ abstract class AndromedaMviViewModel<S : UiState, I : UiIntent, A : UiAction, E 
      */
     protected fun tryEffect(block: suspend () -> E) {
         ioLaunch {
-            _uiEffects.trySend(block.invoke())
+            _uiEffects
+                .trySend(block.invoke())
                 .onFailure { ex ->
                     if (ex is ClosedSendChannelException) {
                         Log.d("Andromeda", "Channel closed, ignoring effect: ${ex.message}")

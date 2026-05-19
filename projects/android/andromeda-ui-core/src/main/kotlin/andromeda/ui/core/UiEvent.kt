@@ -71,7 +71,6 @@ package andromeda.ui.core
  * @see [UiEventManager]
  * */
 sealed interface UiEvent {
-
     /**
      * Represents a user-facing notification event.
      *
@@ -100,9 +99,8 @@ sealed interface UiEvent {
         open val type: UiEventType?,
         open val metadata: Any?,
         open val duration: Long,
-        open val autoDismiss: Boolean
+        open val autoDismiss: Boolean,
     ) : UiEvent {
-
         /** Indicates a general informational message. */
         data class Info(
             override val title: UiText?,
@@ -110,7 +108,7 @@ sealed interface UiEvent {
             override val type: UiEventType?,
             override val metadata: Any?,
             override val duration: Long,
-            override val autoDismiss: Boolean
+            override val autoDismiss: Boolean,
         ) : Notification(title, message, type, metadata, duration, autoDismiss)
 
         /** Indicates a successful operation or positive feedback. */
@@ -120,7 +118,7 @@ sealed interface UiEvent {
             override val type: UiEventType?,
             override val metadata: Any?,
             override val duration: Long,
-            override val autoDismiss: Boolean
+            override val autoDismiss: Boolean,
         ) : Notification(title, message, type, metadata, duration, autoDismiss)
 
         /** Indicates a warning, urging the user to be cautious. */
@@ -130,7 +128,7 @@ sealed interface UiEvent {
             override val type: UiEventType?,
             override val metadata: Any?,
             override val duration: Long,
-            override val autoDismiss: Boolean
+            override val autoDismiss: Boolean,
         ) : Notification(title, message, type, metadata, duration, autoDismiss)
 
         /** Indicates a failure, error, or an exceptional state that needs attention. */
@@ -140,7 +138,7 @@ sealed interface UiEvent {
             override val type: UiEventType?,
             override val metadata: Any?,
             override val duration: Long,
-            override val autoDismiss: Boolean
+            override val autoDismiss: Boolean,
         ) : Notification(title, message, type, metadata, duration, autoDismiss)
 
         /**
@@ -155,11 +153,10 @@ sealed interface UiEvent {
             override val type: UiEventType?,
             override val metadata: Any?,
             override val duration: Long,
-            override val autoDismiss: Boolean
+            override val autoDismiss: Boolean,
         ) : Notification(title, message, type, metadata, duration, autoDismiss)
 
         companion object {
-
             /**
              * Default notification visibility duration in milliseconds.
              */
@@ -188,9 +185,8 @@ sealed interface UiEvent {
      */
     data class Trigger(
         val actionId: String,
-        val metadata: Map<String, Any?>
+        val metadata: Map<String, Any?>,
     ) : UiEvent {
-
         init {
             require(actionId.isNotBlank()) { "actionId must not be blank." }
         }
@@ -201,9 +197,7 @@ sealed interface UiEvent {
          * @param key The identifier of the metadata entry.
          * @return The cast value if present and of correct type, or `null` otherwise.
          */
-        inline fun <reified T> metadata(key: String): T? {
-            return metadata[key] as? T
-        }
+        inline fun <reified T> metadata(key: String): T? = metadata[key] as? T
 
         /**
          * Retrieves a value from the [metadata] map or falls back to [defaultValue].
@@ -212,9 +206,10 @@ sealed interface UiEvent {
          * @param defaultValue The value to return if the key is missing or type casting fails.
          * @return The cast value or the [defaultValue].
          */
-        inline fun <reified T> metadata(key: String, defaultValue: T): T {
-            return metadata[key] as? T ?: defaultValue
-        }
+        inline fun <reified T> metadata(
+            key: String,
+            defaultValue: T,
+        ): T = metadata[key] as? T ?: defaultValue
     }
 
     /**
@@ -241,7 +236,7 @@ sealed interface UiEvent {
         val inclusive: Boolean = false,
         val launchSingleTop: Boolean = true,
         val restoreState: Boolean = false,
-        val saveState: Boolean = false
+        val saveState: Boolean = false,
     ) : UiEvent
 
     /**

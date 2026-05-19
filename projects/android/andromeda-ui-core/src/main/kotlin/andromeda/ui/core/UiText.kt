@@ -17,7 +17,6 @@ import androidx.annotation.StringRes
  * It also supports nesting [UiText] instances within formatting arguments.
  */
 sealed interface UiText {
-
     /**
      * Represents an empty text state. Safely resolves to an empty string.
      */
@@ -29,7 +28,7 @@ sealed interface UiText {
      * @property value The literal string to display.
      */
     data class Dynamic(
-        val value: String
+        val value: String,
     ) : UiText
 
     /**
@@ -45,7 +44,7 @@ sealed interface UiText {
      */
     data class StringResource(
         @StringRes val id: Int,
-        val args: List<Any> = listOf()
+        val args: List<Any> = listOf(),
     ) : UiText
 
     /**
@@ -66,7 +65,7 @@ sealed interface UiText {
     data class Plural(
         @PluralsRes val id: Int,
         val quantity: Int,
-        val args: List<Any> = listOf()
+        val args: List<Any> = listOf(),
     ) : UiText
 
     /**
@@ -76,20 +75,28 @@ sealed interface UiText {
      * @param context The Android [Context] used to access string resources.
      * @return The resolved text as a [String].
      */
-    fun asString(context: Context): String = when (this) {
+    fun asString(context: Context): String =
+        when (this) {
+            is Empty -> {
+                ""
+            }
 
-        is Empty -> ""
+            is Dynamic -> {
+                value
+            }
 
-        is Dynamic -> value
+            is StringResource -> {
+                with(receiver = context) {
+                    getString(id, *handleArguments(args))
+                }
+            }
 
-        is StringResource -> with(receiver = context) {
-            getString(id, *handleArguments(args))
+            is Plural -> {
+                with(receiver = context) {
+                    resources.getQuantityString(id, quantity, *handleArguments(args))
+                }
+            }
         }
-
-        is Plural -> with(receiver = context) {
-            resources.getQuantityString(id, quantity, *handleArguments(args))
-        }
-    }
 
     /**
      * Maps a list of generic arguments ([Any]) into an array suitable for [String.format]

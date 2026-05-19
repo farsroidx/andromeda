@@ -12,7 +12,6 @@ package andromeda.foundation.exception
  * @property cause The underlying [Throwable] that caused the exception.
  */
 class AndromedaException : RuntimeException {
-
     /**
      * Default constructor with no message or cause.
      */

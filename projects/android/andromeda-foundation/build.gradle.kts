@@ -47,7 +47,7 @@ kotlin {
         freeCompilerArgs.addAll(
             "-Xcontext-parameters",
             "-Xannotation-default-target=param-property",
-            "-Xexplicit-backing-fields"
+            "-Xexplicit-backing-fields",
         )
     }
 }

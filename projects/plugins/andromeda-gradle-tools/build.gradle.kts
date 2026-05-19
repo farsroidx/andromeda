@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.andromeda.publishing)
 }
 
-version = "1.0.1"
+version = "1.1.0"
 
 kotlin {
     jvmToolchain(17)

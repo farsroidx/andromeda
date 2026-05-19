@@ -25,7 +25,6 @@ import javax.crypto.spec.GCMParameterSpec
  * 4. Decrypt incoming message: `Encryption.decryptAes(encryptedBytes)`
  */
 object AndromedaAES {
-
     private const val USER_AUTHENTICATION_REQUIRED = false // Set true if you want biometric prompt
 
     const val KEY_ALIAS = "ir.farsroidx.andromeda.aes_key"
@@ -34,11 +33,11 @@ object AndromedaAES {
     const val PADDING = KeyProperties.ENCRYPTION_PADDING_NONE
     const val TRANSFORMATION = "$ALGORITHM/$BLOCK_MODE/$PADDING"
     const val KEY_SIZE = 256
-    const val IV_SIZE =  12
+    const val IV_SIZE = 12
     const val TAG_SIZE = 128
 
-    fun getSecretKey(identifier: String? = null): SecretKey {
-        return AndromedaKeyStore.getSecretKey(alias = getAliasKey(identifier))
+    fun getSecretKey(identifier: String? = null): SecretKey =
+        AndromedaKeyStore.getSecretKey(alias = getAliasKey(identifier))
             ?: AndromedaKeyStore.initAesSecretKey(
                 size = KEY_SIZE,
                 alias = getAliasKey(identifier),
@@ -47,7 +46,6 @@ object AndromedaAES {
                 blockMode = BLOCK_MODE,
                 authRequired = USER_AUTHENTICATION_REQUIRED,
             )
-    }
 
     fun encrypt(data: ByteArray): ByteArray {
         val cipher = Cipher.getInstance(TRANSFORMATION)
@@ -60,7 +58,7 @@ object AndromedaAES {
     }
 
     fun decrypt(data: ByteArray): ByteArray {
-        if (data.size <= IV_SIZE) { throw IllegalArgumentException("Invalid encrypted data") }
+        if (data.size <= IV_SIZE) throw IllegalArgumentException("Invalid encrypted data")
         val iv = data.copyOfRange(0, IV_SIZE)
         val encrypted = data.copyOfRange(IV_SIZE, data.size)
         val cipher = Cipher.getInstance(TRANSFORMATION)
@@ -69,20 +67,15 @@ object AndromedaAES {
         return cipher.doFinal(encrypted)
     }
 
-    fun deleteKey(identifier: String? = null) =
-        AndromedaKeyStore.deleteKey(alias = getAliasKey(identifier))
+    fun deleteKey(identifier: String? = null) = AndromedaKeyStore.deleteKey(alias = getAliasKey(identifier))
 
     fun deleteKeys() {
-
         AndromedaKeyStore.getAliases().forEach {
-
             if (it.startsWith(prefix = KEY_ALIAS)) {
                 AndromedaKeyStore.deleteKey(alias = it)
             }
         }
     }
 
-    private fun getAliasKey(identifier: String? = null): String {
-        return if (identifier == null) KEY_ALIAS else "${KEY_ALIAS}.$identifier"
-    }
+    private fun getAliasKey(identifier: String? = null): String = if (identifier == null) KEY_ALIAS else "${KEY_ALIAS}.$identifier"
 }
