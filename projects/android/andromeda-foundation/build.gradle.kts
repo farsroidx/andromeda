@@ -30,25 +30,25 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlin {
-
-        jvmToolchain(17)
-
-        compilerOptions {
-
-            freeCompilerArgs.addAll(
-                "-Xcontext-parameters",
-                "-Xannotation-default-target=param-property",
-            )
-        }
-    }
-
     publishing {
 
         singleVariant("release") {
             withSourcesJar()
             withJavadocJar()
         }
+    }
+}
+
+kotlin {
+
+    jvmToolchain(17)
+
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-Xcontext-parameters",
+            "-Xannotation-default-target=param-property",
+            "-Xexplicit-backing-fields"
+        )
     }
 }
 

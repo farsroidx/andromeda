@@ -27,6 +27,8 @@ dependencies {
             projects.android.andromedaKtx,
             projects.android.andromedaLogging,
             projects.android.andromedaUi,
+            projects.android.andromedaUiCompose,
+            projects.android.andromedaUiCore,
             projects.android.andromedaUiKtx,
             projects.android.andromedaViewmodel
         ).forEach { project ->

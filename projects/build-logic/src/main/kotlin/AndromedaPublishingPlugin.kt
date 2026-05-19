@@ -62,7 +62,6 @@ class AndromedaPublishingPlugin : Plugin<Project> {
 
                         from(components.findByName("release") ?: error("Android Library component not found"))
 
-
                         this.groupId    = groupId
                         this.artifactId = artifactId
                         this.version    = versionName

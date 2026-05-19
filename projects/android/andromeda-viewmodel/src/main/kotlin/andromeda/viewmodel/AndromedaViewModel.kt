@@ -84,7 +84,7 @@ abstract class AndromedaViewModel(
 
         // Example: FirebaseCrashlytics.getInstance().recordException(throwable)
 
-        Log.e("AndromedaViewModel", throwable.message, throwable)
+        Log.e("Andromeda", throwable.message, throwable)
     }
 
     /**

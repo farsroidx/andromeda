@@ -9,7 +9,8 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library)     apply false
     // jetbrains
-    alias(libs.plugins.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.jetbrains.kotlin.compose) apply false
+//    alias(libs.plugins.jetbrains.kotlin.android) apply false
     // ktLint
     alias(libs.plugins.ktlint) apply false
 }
@@ -18,7 +19,7 @@ allprojects {
 
     group = "ir.farsroidx"
 
-    version = "2026.02.05"
+    version = "2026.05.20"
 
 }
 

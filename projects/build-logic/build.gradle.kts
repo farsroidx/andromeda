@@ -1,10 +1,5 @@
 plugins { `kotlin-dsl` }
 
-repositories {
-    google()
-    mavenCentral()
-}
-
 gradlePlugin {
 
     plugins {
@@ -21,7 +16,8 @@ gradlePlugin {
 
 dependencies {
 
-    compileOnly("com.android.tools.build:gradle:9.0.0")
+    //noinspection UseTomlInstead
+    compileOnly("com.android.tools.build:gradle:9.0.1")
 
     compileOnly(gradleApi())
 }

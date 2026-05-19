@@ -345,7 +345,7 @@ abstract class AndromedaMviViewModel<S : UiState, I : UiIntent, A : UiAction, E 
         capacity = Channel.BUFFERED,
         onBufferOverflow = BufferOverflow.SUSPEND,
         onUndeliveredElement = {
-            Log.w("AndromedaMviViewModel", "Undelivered: $it")
+            Log.w("Andromeda", "Undelivered: $it")
         }
     )
 
@@ -368,10 +368,10 @@ abstract class AndromedaMviViewModel<S : UiState, I : UiIntent, A : UiAction, E 
             try {
                 _uiEffects.send(block.invoke())
             } catch (ex: ClosedSendChannelException) {
-                Log.d("AndromedaMviViewModel", "Channel closed, ignoring effect: ${ex.message}")
+                Log.d("Andromeda", "Channel closed, ignoring effect: ${ex.message}")
             } catch (ex: Exception) {
                 if (ex !is CancellationException) {
-                    Log.e("AndromedaMviViewModel", "Error sending effect", ex)
+                    Log.e("Andromeda", "Error sending effect", ex)
                 }
             }
         }
@@ -391,9 +391,9 @@ abstract class AndromedaMviViewModel<S : UiState, I : UiIntent, A : UiAction, E 
             _uiEffects.trySend(block.invoke())
                 .onFailure { ex ->
                     if (ex is ClosedSendChannelException) {
-                        Log.d("AndromedaMviViewModel", "Channel closed, ignoring effect: ${ex.message}")
+                        Log.d("Andromeda", "Channel closed, ignoring effect: ${ex.message}")
                     } else {
-                        Log.e("AndromedaMviViewModel", "Error sending effect", ex)
+                        Log.e("Andromeda", "Error sending effect", ex)
                     }
                 }
         }

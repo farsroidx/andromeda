@@ -254,7 +254,7 @@ fun <T> runCatchingOutcome(
                 appendLine("================================================")
             }
 
-            Log.e("AndromedaOutcome", message)
+            Log.e("Andromeda", message)
         }
 
     }.map { outcome ->

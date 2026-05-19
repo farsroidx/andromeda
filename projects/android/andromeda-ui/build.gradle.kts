@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.android.library)
     // maven
     alias(libs.plugins.maven.publish)
-    // builLogic
+    // buildLogic
     alias(libs.plugins.andromeda.publishing)
 }
 
@@ -34,19 +34,6 @@ android {
         dataBinding = true
     }
 
-    kotlin {
-
-        jvmToolchain(17)
-
-        compilerOptions {
-
-            freeCompilerArgs.addAll(
-                "-Xcontext-parameters",
-                "-Xannotation-default-target=param-property",
-            )
-        }
-    }
-
     publishing {
 
         singleVariant("release") {
@@ -56,7 +43,23 @@ android {
     }
 }
 
+kotlin {
+
+    jvmToolchain(17)
+
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-Xcontext-parameters",
+            "-Xannotation-default-target=param-property",
+            "-Xexplicit-backing-fields"
+        )
+    }
+}
+
 dependencies {
+
+    // Andromeda
+    api(projects.android.andromedaUiCore)
 
     // Androidx
     api(libs.androidx.core)

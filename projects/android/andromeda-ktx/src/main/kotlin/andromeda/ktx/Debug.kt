@@ -29,7 +29,7 @@ fun initDebugMode() {
 
     StrictMode.setThreadPolicy(threadPolicy)
 
-    Log.d("AndromedaCore", "Application is running in debug mode...")
+    Log.d("Andromeda", "Application is running in debug mode...")
 }
 
 // Global Choreographer.FrameCallback instance for handling fps monitoring
@@ -61,7 +61,7 @@ fun startFpsMonitoring(callback: (fps: Long) -> Unit) {
 
                     callback(fps)
 
-                    Log.d("AndromedaCore", "Current FPS: $fps")
+                    Log.d("Andromeda", "Current FPS: $fps")
 
                     lastTimeNanos = frameTimeNanos
 
