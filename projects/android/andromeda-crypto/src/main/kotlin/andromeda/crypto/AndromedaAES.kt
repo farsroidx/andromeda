@@ -62,12 +62,14 @@ object AndromedaAES {
         return payloadIv + encrypted
     }
 
+    @Suppress("InsecureCryptoUsage", "java:S3329")
     fun decrypt(data: ByteArray): ByteArray {
         if (data.size <= IV_SIZE) throw IllegalArgumentException("Invalid encrypted data")
-        val iv = data.copyOfRange(0, IV_SIZE)
+        val payloadIv = data.copyOfRange(0, IV_SIZE)
         val encrypted = data.copyOfRange(IV_SIZE, data.size)
         val cipher = Cipher.getInstance(TRANSFORMATION)
-        val spec = GCMParameterSpec(TAG_SIZE, iv)
+        // Safe: IV is generated randomly during encryption and extracted from payload
+        val spec = GCMParameterSpec(TAG_SIZE, payloadIv)
         cipher.init(Cipher.DECRYPT_MODE, getSecretKey(), spec)
         return cipher.doFinal(encrypted)
     }

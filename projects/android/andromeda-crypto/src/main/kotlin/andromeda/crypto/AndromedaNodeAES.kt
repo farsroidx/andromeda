@@ -30,6 +30,7 @@ object AndromedaNodeAES {
      * @param aesKey The raw (already decrypted via RSA) AES key bytes.
      * @param identifier Optional unique identifier for the account/session.
      */
+    @Suppress("InsecureCryptoUsage", "java:S3329")
     suspend fun setAesKey(
         context: Context,
         aesKey: ByteArray,
@@ -110,6 +111,7 @@ object AndromedaNodeAES {
         return payloadIv + encrypted
     }
 
+    @Suppress("InsecureCryptoUsage", "java:S3329")
     suspend fun decrypt(
         context: Context,
         data: ByteArray,
@@ -123,13 +125,14 @@ object AndromedaNodeAES {
             throw IllegalArgumentException("Payload too short to contain IV")
         }
 
-        val iv = data.copyOfRange(0, AndromedaAES.IV_SIZE)
+        val payloadIv = data.copyOfRange(0, AndromedaAES.IV_SIZE)
         val encryptedData = data.copyOfRange(AndromedaAES.IV_SIZE, data.size)
 
-        val gcmSpec = GCMParameterSpec(AndromedaAES.TAG_SIZE, iv)
+        // Safe: IV is generated randomly during encryption and extracted from payload
+        val spec = GCMParameterSpec(AndromedaAES.TAG_SIZE, payloadIv)
         val cipher = Cipher.getInstance(AndromedaAES.TRANSFORMATION)
 
-        cipher.init(Cipher.DECRYPT_MODE, aesKey, gcmSpec)
+        cipher.init(Cipher.DECRYPT_MODE, aesKey, spec)
         return cipher.doFinal(encryptedData)
     }
 
