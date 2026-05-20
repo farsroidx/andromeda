@@ -58,6 +58,7 @@ open class AndromedaExtension(
      * @param resourceFilePath The relative path to the strings.xml file containing the app name.
      * @param callback A lambda that generates the final APK name using the [models.BuildInfo] data model.
      */
+    @Suppress("TooGenericExceptionCaught")
     fun renameOutput(
         onlyInRelease: Boolean = true,
         resourceFieldName: String = "app_name",

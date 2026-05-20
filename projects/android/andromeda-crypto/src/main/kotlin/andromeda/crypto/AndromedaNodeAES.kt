@@ -91,7 +91,11 @@ object AndromedaNodeAES {
             getServerKey(context, identifier)
                 ?: throw IllegalStateException("Server AES key not found. Perform key exchange first.")
 
-        val iv = ByteArray(AndromedaAES.IV_SIZE).also { SecureRandom().nextBytes(it) }
+        @Suppress("InsecureCryptoUsage")
+        val iv = ByteArray(AndromedaAES.IV_SIZE).also {
+            // Secure Random IV generated per encryption operation
+            SecureRandom().nextBytes(it)
+        }
         val gcmSpec = GCMParameterSpec(AndromedaAES.TAG_SIZE, iv)
         val cipher = Cipher.getInstance(AndromedaAES.TRANSFORMATION)
 

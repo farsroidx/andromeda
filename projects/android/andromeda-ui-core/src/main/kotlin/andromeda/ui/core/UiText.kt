@@ -87,12 +87,14 @@ sealed interface UiText {
 
             is StringResource -> {
                 with(receiver = context) {
+                    @Suppress("SpreadOperator")
                     getString(id, *handleArguments(args))
                 }
             }
 
             is Plural -> {
                 with(receiver = context) {
+                    @Suppress("SpreadOperator")
                     resources.getQuantityString(id, quantity, *handleArguments(args))
                 }
             }

@@ -118,6 +118,7 @@ object AndromedaRSA {
 
     private fun getAliasKey(identifier: String? = null): String = if (identifier == null) KEY_ALIAS else "$KEY_ALIAS.$identifier"
 
+    @Suppress("TooGenericExceptionCaught")
     private fun getOAEPParameterSpec(identifier: String? = null): OAEPParameterSpec {
         optimalSpec?.let { return it }
 

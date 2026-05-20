@@ -364,6 +364,7 @@ abstract class AndromedaMviViewModel<S : UiState, I : UiIntent, A : UiAction, E 
      * sendEffect { HomeEffect.NavigateToDetails(id) }
      * ```
      */
+    @Suppress("TooGenericExceptionCaught")
     protected fun sendEffect(block: suspend () -> E) {
         ioLaunch {
             try {
