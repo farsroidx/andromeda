@@ -1,22 +1,37 @@
-# Andromeda ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white) ![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red.svg?style=for-the-badge&logo=heart&logoColor=white) 
+<div align="center">
+
+<img src="docs/cover.jpg" alt="ElasticOverscroll Banner" width="100%">
+
+# 🌟 The Android Dev Ecosystem 🌟
+
+### **🚀 Powering the Next Generation of Android Development 🚀**
+
+A modular, Kotlin‑first architecture ecosystem built to simplify, unify, and accelerate Android development.
+
+From libraries and Compose UI to Gradle and AndroidStudio plugins — engineered for speed, scalability, and clean architecture.
 
 [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-bom.svg)](https://central.sonatype.com/search?q=g:ir.farsroidx&smo=true)
 [![License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.21-7F52FF.svg?logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.3.21-7F52FF.svg?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/4c0aaa44a2124bafa2666a06d7799f46)](https://app.codacy.com/gh/farsroidx/andromeda/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 ![Min SDK](https://img.shields.io/badge/minSdk-23%2B-orange.svg?style=flat)
 [![ktlint](https://img.shields.io/badge/code%20style-ktlint-7F52FF.svg?logo=kotlin&logoColor=white)](https://ktlint.github.io/)
 ![Last Commit](https://img.shields.io/github/last-commit/farsroidx/andromeda)
+
+![Ecosystem](https://img.shields.io/badge/Ecosystem-Modular-2D5AFF?style=for-the-badge&logo=codeforces&logoColor=white) 
+![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) 
+![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white) 
+![Peace](https://img.shields.io/badge/Peace-for%20All-3CB371?style=for-the-badge&logo=leaflet&logoColor=white)
+
+<div align="center">
+    Made with ❤️ for the Android Community
+</div>
+
+</div>
+
 ---
-💚 🤍 ❤️
 
-**Andromeda** is a modern, modular Android architecture toolkit designed to help you build scalable, maintainable, and production-ready Android applications.
-
-This repository serves as the **parent project** for the Andromeda ecosystem and contains multiple independent modules that can be used together or individually.
-
----
-
-### 🪶 Total Binary Size: **~150KB**
+### 🪶 Total Binary Size: **~250KB**
 > Includes all published **AAR | JAR** artifacts (latest version, whitout signutures).
 
 ---
@@ -34,20 +49,20 @@ This repository serves as the **parent project** for the Andromeda ecosystem and
 
 Andromeda is composed of multiple standalone modules, including but not limited to:
 
-| Feature | Unavailable | In Development | Stable |                                                                                 Latest Version                                                                                 |
-|:--------|:-----------:|:--------------:|:------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| andromeda-bom                                  |—|—|—|            [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-bom.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-bom)            |
-| [andromeda-crypto](projects/android/andromeda-crypto)                 | |✔|✔|         [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-crypto.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-crypto)                    |
-| [andromeda-foundation](projects/android/andromeda-foundation)         | |✔|✔|     [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-foundation.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-foundation)                |
-| [andromeda-foundation-ktx](projects/android/andromeda-foundation-ktx) | |✔|✔| [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-foundation-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-foundation-ktx)            |
-| [andromeda-ktx](projects/android/andromeda-ktx)                       | |✔|✔|            [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ktx)                       |
-| [andromeda-logging](projects/android/andromeda-logging)               | |✔|✔|        [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-logging.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-logging)                   |
-| [andromeda-ui](projects/android/andromeda-ui)                         | |✔|✔|             [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ui.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ui)                        |
-| [andromeda-ui-compose](projects/android/andromeda-ui-compose)         | |✔|✔|             [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ui-compose.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ui-compose)        |
-| [andromeda-ui-core](projects/android/andromeda-ui-core)               | |✔|✔|             [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ui-core.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ui-core)              |
-| [andromeda-ui-ktx](projects/android/andromeda-ui-ktx)                 | |✔|✔|         [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ui-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ui-ktx)                    |
-| [andromeda-viewmodel](projects/android/andromeda-viewmodel)           | | |✔|       [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-viewmodel.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-viewmodel)                 |
-| [andromeda-gradle-tools](projects/plugins/andromeda-gradle-tools)     | |✔|✔|       [![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/ir.farsroidx.andromeda-gradle-tools)](https://plugins.gradle.org/plugin/ir.farsroidx.andromeda-gradle-tools) |
+| Feature | Stopped | Under Development |                                                                                 Stable Version                                                                                 |
+|:--------|:-----------:|:--------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| andromeda-bom                                                           |—|—|            [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-bom.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-bom)            |
+| [andromeda-crypto](projects/android/andromeda-crypto)                 |—|✔|         [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-crypto.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-crypto)                    |
+| [andromeda-foundation](projects/android/andromeda-foundation)         |—|✔|     [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-foundation.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-foundation)                |
+| [andromeda-foundation-ktx](projects/android/andromeda-foundation-ktx) |—|✔| [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-foundation-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-foundation-ktx)            |
+| [andromeda-ktx](projects/android/andromeda-ktx)                       |—|✔|            [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ktx)                       |
+| [andromeda-logging](projects/android/andromeda-logging)               |—|✔|        [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-logging.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-logging)                   |
+| [andromeda-ui](projects/android/andromeda-ui)                         |—|✔|             [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ui.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ui)                        |
+| [andromeda-ui-compose](projects/android/andromeda-ui-compose)         |—|✔|             [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ui-compose.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ui-compose)        |
+| [andromeda-ui-core](projects/android/andromeda-ui-core)               |—|✔|             [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ui-core.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ui-core)              |
+| [andromeda-ui-ktx](projects/android/andromeda-ui-ktx)                 |—|✔|         [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-ui-ktx.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-ui-ktx)                    |
+| [andromeda-viewmodel](projects/android/andromeda-viewmodel)           |—|✔|       [![Maven Central](https://img.shields.io/maven-central/v/ir.farsroidx/andromeda-viewmodel.svg)](https://mvnrepository.com/artifact/ir.farsroidx/andromeda-viewmodel)                 |
+| [andromeda-gradle-tools](projects/plugins/andromeda-gradle-tools)     |—|✔|       [![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/ir.farsroidx.andromeda-gradle-tools)](https://plugins.gradle.org/plugin/ir.farsroidx.andromeda-gradle-tools) |
 
 Each module is versioned and published as an independent artifact, while remaining fully compatible through the Andromeda BOM.
 
