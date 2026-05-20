@@ -41,9 +41,9 @@ object AndromedaNodeAES {
         // We use the Local AndroidKeyStore AES key to encrypt the Server's AES key
         cipher.init(Cipher.ENCRYPT_MODE, AndromedaAES.getSecretKey(identifier))
 
-        val iv = cipher.iv // Typically 12 bytes for GCM
+        val payloadIv = cipher.iv // Typically 12 bytes for GCM
         val encrypted = cipher.doFinal(aesKey)
-        val combined = iv + encrypted
+        val combined = payloadIv + encrypted
 
         val encoded = AndromedaBase64.encode(combined)
 
