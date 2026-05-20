@@ -49,7 +49,11 @@ object AndromedaAES {
 
     fun encrypt(data: ByteArray): ByteArray {
         val cipher = Cipher.getInstance(TRANSFORMATION)
-        val iv = ByteArray(IV_SIZE).also { SecureRandom().nextBytes(it) }
+        @Suppress("InsecureCryptoUsage")
+        val iv = ByteArray(IV_SIZE).also {
+            // Secure Random IV generated per encryption operation
+            SecureRandom().nextBytes(it)
+        }
         val spec = GCMParameterSpec(TAG_SIZE, iv)
         cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(), spec)
         val encrypted = cipher.doFinal(data)

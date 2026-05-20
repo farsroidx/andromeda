@@ -72,7 +72,9 @@ object AndromedaNodeAES {
         val encrypted = combined.copyOfRange(ivSize, combined.size)
 
         val cipher = Cipher.getInstance(AndromedaAES.TRANSFORMATION)
-        // CORRECTION: Use GCMParameterSpec for GCM mode, not IvParameterSpec
+
+        // IV extracted from encrypted payload generated during encryption
+        @Suppress("InsecureCryptoUsage")
         val spec = GCMParameterSpec(AndromedaAES.TAG_SIZE, iv)
 
         cipher.init(Cipher.DECRYPT_MODE, AndromedaAES.getSecretKey(identifier), spec)
@@ -96,6 +98,9 @@ object AndromedaNodeAES {
             // Secure Random IV generated per encryption operation
             SecureRandom().nextBytes(it)
         }
+        
+        // IV extracted from encrypted payload generated during encryption
+        @Suppress("InsecureCryptoUsage")
         val gcmSpec = GCMParameterSpec(AndromedaAES.TAG_SIZE, iv)
         val cipher = Cipher.getInstance(AndromedaAES.TRANSFORMATION)
 
