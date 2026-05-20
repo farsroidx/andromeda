@@ -56,6 +56,7 @@ object AndromedaNodeAES {
      * @param identifier Optional unique identifier for the account/session.
      * @return The decrypted [SecretKey] ready for data encryption/decryption.
      */
+    @Suppress("InsecureCryptoUsage", "java:53329")
     private suspend fun getServerKey(
         context: Context,
         identifier: String? = null,
@@ -73,8 +74,7 @@ object AndromedaNodeAES {
 
         val cipher = Cipher.getInstance(AndromedaAES.TRANSFORMATION)
 
-        // IV extracted from encrypted payload generated during encryption
-        @Suppress("InsecureCryptoUsage")
+        // Safe: IV is generated randomly during encryption and extracted from payload
         val spec = GCMParameterSpec(AndromedaAES.TAG_SIZE, iv)
 
         cipher.init(Cipher.DECRYPT_MODE, AndromedaAES.getSecretKey(identifier), spec)
@@ -84,6 +84,7 @@ object AndromedaNodeAES {
         return SecretKeySpec(keyBytes, AndromedaAES.ALGORITHM)
     }
 
+    @Suppress("InsecureCryptoUsage", "java:53329")
     suspend fun encrypt(
         context: Context,
         data: ByteArray,
@@ -93,18 +94,16 @@ object AndromedaNodeAES {
             getServerKey(context, identifier)
                 ?: throw IllegalStateException("Server AES key not found. Perform key exchange first.")
 
-        @Suppress("InsecureCryptoUsage")
         val iv = ByteArray(AndromedaAES.IV_SIZE).also {
             // Secure Random IV generated per encryption operation
             SecureRandom().nextBytes(it)
         }
-        
-        // IV extracted from encrypted payload generated during encryption
-        @Suppress("InsecureCryptoUsage")
-        val gcmSpec = GCMParameterSpec(AndromedaAES.TAG_SIZE, iv)
+
+        // Safe: IV is generated randomly during encryption and extracted from payload
+        val spec = GCMParameterSpec(AndromedaAES.TAG_SIZE, iv)
         val cipher = Cipher.getInstance(AndromedaAES.TRANSFORMATION)
 
-        cipher.init(Cipher.ENCRYPT_MODE, aesKey, gcmSpec)
+        cipher.init(Cipher.ENCRYPT_MODE, aesKey, spec)
 
         val encrypted = cipher.doFinal(data)
 

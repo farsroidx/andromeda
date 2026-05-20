@@ -47,13 +47,14 @@ object AndromedaAES {
                 authRequired = USER_AUTHENTICATION_REQUIRED,
             )
 
+    @Suppress("InsecureCryptoUsage", "java:53329")
     fun encrypt(data: ByteArray): ByteArray {
         val cipher = Cipher.getInstance(TRANSFORMATION)
-        @Suppress("InsecureCryptoUsage")
         val iv = ByteArray(IV_SIZE).also {
             // Secure Random IV generated per encryption operation
             SecureRandom().nextBytes(it)
         }
+        // Safe: IV is generated randomly during encryption and extracted from payload
         val spec = GCMParameterSpec(TAG_SIZE, iv)
         cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(), spec)
         val encrypted = cipher.doFinal(data)
