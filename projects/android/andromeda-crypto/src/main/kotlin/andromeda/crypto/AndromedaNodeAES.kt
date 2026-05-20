@@ -56,7 +56,7 @@ object AndromedaNodeAES {
      * @param identifier Optional unique identifier for the account/session.
      * @return The decrypted [SecretKey] ready for data encryption/decryption.
      */
-    @Suppress("InsecureCryptoUsage", "java:53329")
+    @Suppress("InsecureCryptoUsage", "java:S3329")
     private suspend fun getServerKey(
         context: Context,
         identifier: String? = null,
@@ -69,13 +69,13 @@ object AndromedaNodeAES {
         val ivSize = AndromedaAES.IV_SIZE
         if (combined.size <= ivSize) return null
 
-        val iv = combined.copyOfRange(0, ivSize)
+        val payloadIv = combined.copyOfRange(0, ivSize)
         val encrypted = combined.copyOfRange(ivSize, combined.size)
 
         val cipher = Cipher.getInstance(AndromedaAES.TRANSFORMATION)
 
         // Safe: IV is generated randomly during encryption and extracted from payload
-        val spec = GCMParameterSpec(AndromedaAES.TAG_SIZE, iv)
+        val spec = GCMParameterSpec(AndromedaAES.TAG_SIZE, payloadIv)
 
         cipher.init(Cipher.DECRYPT_MODE, AndromedaAES.getSecretKey(identifier), spec)
 
@@ -84,7 +84,7 @@ object AndromedaNodeAES {
         return SecretKeySpec(keyBytes, AndromedaAES.ALGORITHM)
     }
 
-    @Suppress("InsecureCryptoUsage", "java:53329")
+    @Suppress("InsecureCryptoUsage", "java:S3329")
     suspend fun encrypt(
         context: Context,
         data: ByteArray,
@@ -94,20 +94,20 @@ object AndromedaNodeAES {
             getServerKey(context, identifier)
                 ?: throw IllegalStateException("Server AES key not found. Perform key exchange first.")
 
-        val iv = ByteArray(AndromedaAES.IV_SIZE).also {
+        val payloadIv = ByteArray(AndromedaAES.IV_SIZE).also {
             // Secure Random IV generated per encryption operation
             SecureRandom().nextBytes(it)
         }
 
         // Safe: IV is generated randomly during encryption and extracted from payload
-        val spec = GCMParameterSpec(AndromedaAES.TAG_SIZE, iv)
+        val spec = GCMParameterSpec(AndromedaAES.TAG_SIZE, payloadIv)
         val cipher = Cipher.getInstance(AndromedaAES.TRANSFORMATION)
 
         cipher.init(Cipher.ENCRYPT_MODE, aesKey, spec)
 
         val encrypted = cipher.doFinal(data)
 
-        return iv + encrypted
+        return payloadIv + encrypted
     }
 
     suspend fun decrypt(
