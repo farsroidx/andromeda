@@ -2,7 +2,13 @@
 
 farsroidx pre-built codes for faster and easier Android app development.
 
-> 🪶 AAR Library Size: **~13KB**
+> 🪶 AAR Library Size: **~0KB**
+
+---
+
+📌 **Note**: By adding `andromeda-ui`, you do not need to add `andromeda-ui-core` separately, as all its functionality is already included.
+
+---
 
 ### 📦 Andromeda Libraries
 

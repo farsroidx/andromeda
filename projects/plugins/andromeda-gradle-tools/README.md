@@ -15,9 +15,9 @@ and build conventions that can be immediately applied to any project.
 pluginManagement {
     repositories {
         mavenLocal()
+        gradlePluginPortal()
         mavenCentral()
         google()
-        gradlePluginPortal()
     }
 }
 ```

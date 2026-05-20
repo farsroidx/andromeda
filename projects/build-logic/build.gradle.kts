@@ -1,10 +1,5 @@
 plugins { `kotlin-dsl` }
 
-repositories {
-    google()
-    mavenCentral()
-}
-
 gradlePlugin {
 
     plugins {
@@ -13,7 +8,7 @@ gradlePlugin {
 
             id = "ir.farsroidx.andromeda-publishing"
 
-            implementationClass = "ir.farsroidx.AndromedaPublishingPlugin"
+            implementationClass = "AndromedaPublishingPlugin"
 
         }
     }
@@ -21,7 +16,8 @@ gradlePlugin {
 
 dependencies {
 
-    compileOnly("com.android.tools.build:gradle:8.13.2")
+    //noinspection UseTomlInstead
+    compileOnly("com.android.tools.build:gradle:9.2.1")
 
     compileOnly(gradleApi())
 }

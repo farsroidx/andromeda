@@ -1,19 +1,17 @@
 plugins {
     // android
     alias(libs.plugins.android.library)
-    // jetbrains
-    alias(libs.plugins.jetbrains.kotlin.android)
     // maven
     alias(libs.plugins.maven.publish)
     // buildLogic
     alias(libs.plugins.andromeda.publishing)
 }
 
-version = "1.0.0"
+version = "3.0.0"
 
 android {
 
-    namespace = "ir.farsroidx.andromeda.foundation.ktx"
+    namespace = "andromeda.foundation.ktx"
 
     compileSdk {
         version = release(36)
@@ -32,25 +30,25 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlin {
-
-        jvmToolchain(17)
-
-        compilerOptions {
-
-            freeCompilerArgs.addAll(
-                "-Xcontext-parameters",
-                "-Xannotation-default-target=param-property",
-            )
-        }
-    }
-
     publishing {
 
         singleVariant("release") {
             withSourcesJar()
-            withJavadocJar()
+            // withJavadocJar()
         }
+    }
+}
+
+kotlin {
+
+    jvmToolchain(17)
+
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-Xcontext-parameters",
+            "-Xannotation-default-target=param-property",
+            "-Xexplicit-backing-fields",
+        )
     }
 }
 
@@ -58,6 +56,9 @@ dependencies {
 
     // Andromeda
     api(projects.android.andromedaFoundation)
+
+    // Jetbrains
+    implementation(libs.jetbrains.kotlinx.coroutines.android)
 
     // JUnit and Test
     testImplementation(libs.junit)

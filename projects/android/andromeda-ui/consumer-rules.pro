@@ -2,8 +2,8 @@
 
 -keepattributes Signature, InnerClasses, EnclosingMethod
 
--keep public abstract class * extends ir.farsroidx.andromeda.ui.AndromedaActivity
--keep public abstract class * extends ir.farsroidx.andromeda.ui.AndromedaFragment
+-keep public abstract class * extends andromeda.ui.AndromedaActivity
+-keep public abstract class * extends andromeda.ui.AndromedaFragment
 
 -keepclassmembers public class * implements androidx.viewbinding.ViewBinding {
     public static *** inflate(android.view.LayoutInflater);

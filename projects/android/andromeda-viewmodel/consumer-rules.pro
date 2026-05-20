@@ -4,17 +4,17 @@
 -keepattributes Signature
 
 # Keep all Andromeda ViewModels
--keep class * implements ir.farsroidx.andromeda.viewmodel.AndromedaViewModel { *; }
+-keep class * implements andromeda.viewmodel.AndromedaViewModel { *; }
 
 # Keep all contract interfaces
--keep interface ir.farsroidx.andromeda.viewmodel.contract.** { *; }
+-keep interface andromeda.viewmodel.contract.** { *; }
 
 # Keep concrete EmptyState object
--keep class ir.farsroidx.andromeda.viewmodel.contract.AndromedaEmptyState { *; }
+-keep class andromeda.viewmodel.contract.AndromedaEmptyState { *; }
 
 # Keep DispatcherProvider interface + object implementation
--keep interface ir.farsroidx.andromeda.viewmodel.dispatcher.AndromedaDispatcherProvider
--keep class ir.farsroidx.andromeda.viewmodel.dispatcher.AndromedaDispatcherProviderImpl { *; }
+-keep interface andromeda.viewmodel.dispatcher.AndromedaDispatcherProvider
+-keep class andromeda.viewmodel.dispatcher.AndromedaDispatcherProviderImpl { *; }
 
 # Keep metadata for Kotlin reflection and contracts
 -keep class kotlin.Metadata { *; }

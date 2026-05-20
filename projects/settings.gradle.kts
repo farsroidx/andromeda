@@ -5,9 +5,10 @@ pluginManagement {
 
     repositories {
         mavenLocal()
+        maven(url = "https://maven.myket.ir")
+        gradlePluginPortal()
         mavenCentral()
         google()
-        gradlePluginPortal()
     }
 }
 
@@ -20,10 +21,10 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         mavenLocal()
+        maven(url = "https://maven.myket.ir")
         mavenCentral()
         google()
         maven(url = "https://jitpack.io")
-        maven(url = "https://plugins.gradle.org/m2/")
     }
 }
 
@@ -33,11 +34,14 @@ rootProject.name = "Andromeda"
 
 include(
     // ANDROID
+    ":android:andromeda-crypto",
     ":android:andromeda-foundation",
     ":android:andromeda-foundation-ktx",
     ":android:andromeda-ktx",
     ":android:andromeda-logging",
     ":android:andromeda-ui",
+    ":android:andromeda-ui-compose",
+    ":android:andromeda-ui-core",
     ":android:andromeda-ui-ktx",
     ":android:andromeda-viewmodel",
     // PLUGINS

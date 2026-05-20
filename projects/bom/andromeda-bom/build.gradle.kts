@@ -21,11 +21,14 @@ dependencies {
         println("============================================================")
 
         listOf(
+            projects.android.andromedaCrypto,
             projects.android.andromedaFoundation,
             projects.android.andromedaFoundationKtx,
             projects.android.andromedaKtx,
             projects.android.andromedaLogging,
             projects.android.andromedaUi,
+            projects.android.andromedaUiCompose,
+            projects.android.andromedaUiCore,
             projects.android.andromedaUiKtx,
             projects.android.andromedaViewmodel
         ).forEach { project ->
